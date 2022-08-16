@@ -19,7 +19,7 @@ const app = express();
 require("./config")(app);
 
 const capitalized = require("./utils/capitalized");
-const projectName = "Project-2";
+const projectName = "gamelandia";
 
 app.locals.appTitle = `${capitalized(projectName)} created with IronLauncher`;
 
