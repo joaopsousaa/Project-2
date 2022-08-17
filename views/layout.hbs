@@ -9,8 +9,32 @@
   </head>
 
   <body>
+    <nav>
+      <div>
+        <a href="/">GameLandia Logo</a>
+      </div>
+      <ul class="nav-links">
+        {{#if isLoggedIn}}
+          {{!-- <li>
+            <a href="/about">About</a>
+          </li> --}}
+          <li>
+            <a href="/auth/logout">Logout</a>
+          </li>
+        {{else}}
+          <li>
+            <a href="/auth/signup">Sign up</a>
+          </li>
+          <li>
+            <a href="/auth/login">Login</a>
+          </li>
+        {{/if}}
+      </ul>
+    </nav>
 
-    {{{body}}}
+    <main>{{{body}}}</main>
+
+    <footer>&copy; Gamelandia | 2022 </footer>
 
     <script src="/js/script.js"></script>
   </body>
