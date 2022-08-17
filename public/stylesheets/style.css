@@ -1,12 +1,22 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+/************** RESET CSS **************/
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 a {
-  color: #00b7ff;
+  display: block;
+  color: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  list-style-type: none;
 }
 
-h1 {
-  color: 15px;
+
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }

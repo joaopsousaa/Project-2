@@ -1,7 +1,7 @@
 document.addEventListener(
   "DOMContentLoaded",
   () => {
-    console.log("Project-2 JS imported successfully!");
+    console.log("Gamelandia JS imported successfully!");
   },
   false
 );
