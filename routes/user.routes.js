@@ -2,8 +2,16 @@ const router = require("express").Router();
 const UserModel = require("../models/User.model");
 const { isValidObjectId } = require("mongoose");
 
-router.get("/:userId", (req, res) => {
+const isLoggedOut = require("../middleware/isLoggedOut");
+const isLoggedIn = require("../middleware/isLoggedIn");
+
+router.get("/:userId", isLoggedIn, (req, res) => {
   const isValidId = isValidObjectId(req.params.userId);
+  const loggedInUserId = req.session.user._id;
+
+  if (loggedInUserId !== req.params.userId) {
+    return res.status(403).redirect("/");
+  }
 
   if (!isValidId) {
     return res.redirect("/");
