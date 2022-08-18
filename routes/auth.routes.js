@@ -19,7 +19,7 @@ router.get("/signup", isLoggedOut, (req, res) => {
 });
 
 router.post("/signup", isLoggedOut, (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
 
   if (!username) {
     return res.status(400).render("auth/signup", {
@@ -30,6 +30,12 @@ router.post("/signup", isLoggedOut, (req, res) => {
   if (password.length < 8) {
     return res.status(400).render("auth/signup", {
       errorMessage: "Your password needs to be at least 8 characters long.",
+    });
+  }
+
+  if (!email) {
+    return res.status(400).render("auth/signup", {
+      errorMessage: "Please provide your email.",
     });
   }
 
@@ -63,6 +69,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
         return User.create({
           username,
           password: hashedPassword,
+          email,
         });
       })
       .then((user) => {
