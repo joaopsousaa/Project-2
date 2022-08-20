@@ -15,7 +15,7 @@ function searchGames() {
   let txtValue;
 
   for (let i = 0; i < tableRows.length; i++) {
-    tableData = tableRows[i].getElementsByTagName("td")[1];
+    tableData = tableRows[i].getElementsByTagName("td")[0];
 
     if (tableData) {
       txtValue = tableData.textContent || tableData.innerText;
