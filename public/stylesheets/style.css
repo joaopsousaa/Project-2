@@ -1,4 +1,4 @@
-/************** RESET CSS **************/
+/* ************* RESET CSS *************
 *,
 ::before,
 ::after {
@@ -40,4 +40,58 @@ body {
   padding: 12px 15px;
 }
 
+ */
+body {
+  background-color: #2d2d30 !important;
+  color: #e8e8e8 !important;
+}
 
+header {
+  background-color: #007acc !important;
+  color: #1e1e1e !important;
+  max-height: 5vh !important;
+}
+
+.row.menu {
+  height: 5vh !important;
+}
+
+.nav-link {
+  color: #1e1e1e !important;
+}
+
+main {
+  min-height: 90vh;
+}
+
+.row.player-card {
+  margin: 0 !important;
+}
+
+.list-group-item {
+  padding: 0 !important;
+}
+
+.player-card {
+  padding: 0 !important;
+}
+
+.player-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+footer {
+  max-height: 5vh !important;
+}
+
+footer > div {
+  background-color: #1e1e1e !important;
+  height: 5vh !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

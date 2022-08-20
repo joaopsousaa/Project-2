@@ -15,9 +15,7 @@ const GameRoomSchema = new Schema(
     },
     players: [
       {
-        players_id: {
-          type: Schema.ObjectId,
-        },
+        type: Schema.ObjectId,
       },
     ],
     minPlayers: {
