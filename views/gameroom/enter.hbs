@@ -1,0 +1,35 @@
+<div class="container">
+  <h1>{{gameroom.name}}</h1>
+  <div class="row">
+    <div class="col-8">
+      <h2>Players</h2>
+      <div class="card">
+        <ul class="list-group list-group-flush">
+          <div class="row player-card">
+            {{#each gameroom.players}}
+              <div class="col-6 player-card">
+                <li class="list-group-item">
+                  <img
+                    src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                    alt=""
+                    class="player-image"
+                  />
+                  Player's Name</li>
+              </div>
+            {{/each}}
+          </div>
+        </ul>
+      </div>
+    </div>
+    <div class="col-4">
+      GameRoom Info
+    </div>
+  </div>
+
+  {{#ifEquals gameroom.status "waiting"}}
+    <a href="{{gameroom._id}}/start">Start Game</a>
+    <a href="{{gameroom._id}}/leave">Leave Room</a>
+  {{else}}
+    <a href="{{gameroom._id}}/finish">Finish Game</a>
+  {{/ifEquals}}
+</div>
