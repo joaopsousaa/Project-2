@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, SchemaType } = require("mongoose");
 
 const GameRoomSchema = new Schema(
   {
@@ -6,18 +6,18 @@ const GameRoomSchema = new Schema(
       type: String,
     },
     game: {
-      type: Number,
+      type: String,
       required: true,
     },
     owner: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: Schema.ObjectId,
       required: true,
     },
     players: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        players_id: {
+          type: Schema.ObjectId,
+        },
       },
     ],
     minPlayers: {

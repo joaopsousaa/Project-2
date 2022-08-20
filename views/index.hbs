@@ -1,3 +1,27 @@
 <h1>{{appTitle}} 🚀</h1>
 <p>Welcome to Gamelandia!</p>
 
+<h2>Game Rooms Status Waiting</h2>
+<input type="text" id="search-game" onkeyup="searchGames()" placeholder="Search for games">
+<table id="list-of-gamerooms">
+    <tr id="headers">
+        <th>id</th>
+        <th>Name</th>
+        <th>Game</th>
+        <th>Min Players</th>
+        <th>Max Players</th>
+        <th>Status</th>
+    </tr>
+    {{#each gameRooms}}
+    <tr>
+        <td>{{_id}}</td>
+        <td>{{name}}</td>
+        <td>{{game}}</td>
+        <td>{{minPlayers}}</td>
+        <td>{{maxPlayers}}</td>
+        <td>{{status}}</td>
+        <td><a href="/gameroom/{{gameroom._id}}" id="join-room">Join Room</a></td>
+    </tr>
+    {{/each}} 
+</table>
+
