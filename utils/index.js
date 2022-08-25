@@ -1,5 +1,4 @@
 const axios = require("axios");
-const bcrypt = require("bcrypt");
 const { STEAM_API_URL, STEAM_API_KEY, STEAM_ICON_URL } = require("./consts");
 
 async function resolveVanityURL(vanityUrl) {
@@ -40,14 +39,7 @@ async function getOwnedGames(steamId) {
   }
 }
 
-function bcrypting(password) {
-  const salt = bcrypt.genSaltSync(12);
-  const hash = bcrypt.hashSync(password, salt);
-  return hash;
-}
-
 module.exports = {
   resolveVanityURL,
   getOwnedGames,
-  bcrypting,
 };

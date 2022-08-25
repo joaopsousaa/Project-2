@@ -74,12 +74,12 @@ router.post("/create", (req, res) => {
     players: user,
     minPlayers,
     maxPlayers,
-  }).then((gameroom) => {
-    return res.status(200).redirect(`/gameroom/${gameroom._id}`);
+  }).then((gameRoom) => {
+    return res.status(200).redirect(`/gameroom/${gameRoom._id}`);
   });
 });
 
-// GET /:gameRoomId - Render the game room page
+// GET /:gameRoomId - Render the game room page AND join the game room
 router.get("/:gameRoomId", (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
@@ -87,35 +87,39 @@ router.get("/:gameRoomId", (req, res) => {
 
   if (!isValidId) return res.status(400).redirect("/");
 
-  GameRoomModel.find({
-    _id: { $ne: gameRoomId },
-    players: user._id,
-    status: { $ne: "finished" },
-  })
-    .then((gameRooms) => {
-      if (gameRooms.length > 0) return res.status(400).redirect("/");
+  GameRoomModel.findById(gameRoomId)
+    .then((gameRoom) => {
+      if (!gameRoom) return res.status(400).redirect("/");
+      if (gameRoom.status === "playing" && !gameRoom.players.includes(user._id))
+        return res.status(400).redirect("/");
+      if (gameRoom.players.includes(user._id))
+        return res.render("gameroom/view", { gameRoom });
+      if (gameRoom.players.length === gameRoom.maxPlayers)
+        return res.status(400).redirect("/");
 
-      GameRoomModel.findById(gameRoomId).then((gameRoom) => {
-        if (!gameRoom) return res.status(400).redirect("/");
-        if (gameRoom.owner.equals(ObjectId(user._id)))
-          return res.render("gameroom/enter", { gameRoom });
-        if (gameRoom.players.includes(user._id))
-          return res.render("gameroom/enter", { gameRoom });
-        if (gameRoom.players.length === gameRoom.maxPlayers)
-          return res.status(400).redirect("/");
+      GameRoomModel.find({
+        _id: { $ne: gameRoomId },
+        players: user._id,
+        status: { $ne: "finished" },
+      }).then((gameRooms) => {
+        if (gameRooms.length > 0) {
+          return res.redirect("/");
+        }
 
-        GameRoomModel.findByIdAndUpdate(gameRoomId, {
-          $push: { players: user._id },
-          new: true,
-        }).then((gameroom) => {
-          if (!gameroom) return res.status(400).redirect("/");
-          res.render("gameroom/enter", { gameroom });
+        GameRoomModel.findByIdAndUpdate(
+          gameRoomId,
+          {
+            $push: { players: user },
+          },
+          { new: true }
+        ).then((gameRoom) => {
+          return res.render("gameroom/view", { gameRoom });
         });
       });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).redirect("/");
+      return res.status(500).redirect("/");
     });
 });
 
@@ -131,13 +135,8 @@ router.get("/:gameRoomId/leave", (req, res) => {
     .then((gameroom) => {
       if (!gameroom) return res.status(400).redirect("/");
 
-      console.log(gameroom.owner._id);
-      console.log(user._id);
-
       if (gameroom.owner.equals(ObjectId(user._id))) {
-        GameRoomModel.findByIdAndDelete(gameRoomId).then((gameroom) => {
-          if (!gameroom) return res.status(400).redirect("/");
-        });
+        return res.redirect(`/gameroom/${gameRoomId}/destroy`);
       }
 
       GameRoomModel.findByIdAndUpdate(gameRoomId, {
@@ -152,8 +151,8 @@ router.get("/:gameRoomId/leave", (req, res) => {
     });
 });
 
-// GET /:gameRoomId/play - Change the game room status to "playing"
-router.get("/:gameRoomId/play", (req, res) => {
+// GET /:gameRoomId/start - Change the game room status to "playing"
+router.get("/:gameRoomId/start", (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
   const isValidId = isValidObjectId(gameRoomId);
@@ -188,6 +187,24 @@ router.get("/:gameRoomId/finish", (req, res) => {
       status: "finished",
     }).then((gameroom) => {
       return res.status(200).redirect(`/gameroom/${gameRoomId}`);
+    });
+  });
+});
+
+// GET /:gameRoomId/destroy - Delete the game room
+router.get("/:gameRoomId/destroy", (req, res) => {
+  const { gameRoomId } = req.params;
+  const { user } = req;
+  const isValidId = isValidObjectId(gameRoomId);
+
+  if (!isValidId) return res.status(400).redirect("/");
+
+  GameRoomModel.findById(gameRoomId).then((gameroom) => {
+    if (!gameroom) return res.status(400).redirect("/");
+    if (!gameroom.owner.equals(ObjectId(user._id)))
+      return res.status(400).redirect(`/gameroom/${gameRoomId}`);
+    GameRoomModel.findByIdAndDelete(gameRoomId).then(() => {
+      return res.status(200).redirect("/");
     });
   });
 });
