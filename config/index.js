@@ -26,7 +26,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
 // Connects the mongo uri to maintain the same naming structure
-const MONGO_URI = require("../utils/consts");
+const { MONGO_URI } = require("../utils/consts");
 
 const hbs = require("hbs");
 
@@ -49,6 +49,10 @@ module.exports = (app) => {
   hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
     return arg1 === arg2 ? options.fn(this) : options.inverse(this);
   });
+
+  hbs.registerHelper("ifNotEquals", function (arg1, arg2, options) {
+    return arg1 !== arg2 ? options.fn(this) : options.inverse(this);
+  });
   // AHandles access to the public folder
   app.use(express.static(path.join(__dirname, "..", "public")));
 
@@ -70,7 +74,7 @@ module.exports = (app) => {
   );
 
   app.use((req, res, next) => {
-    if (req.session.user) {
+    if (req.session.userId) {
       res.locals.isLoggedIn = true;
       // res.locals.user = req.session.user;
     }

@@ -8,16 +8,20 @@ const mongoose = require("mongoose");
 const saltRounds = 10;
 
 // Require the User model in order to interact with the database
-const User = require("../models/User.model");
+const UserModel = require("../models/User.model");
 
-// Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
+// Require necessary (isLoggedOut and isLoggedIn) middleware in order to control access to specific routes
 const isLoggedOut = require("../middleware/isLoggedOut");
 const isLoggedIn = require("../middleware/isLoggedIn");
 
+// ---------------------- Routes ---------------------- //
+
+// GET /signup - Render the signup form
 router.get("/signup", isLoggedOut, (req, res) => {
   res.render("auth/signup");
 });
 
+// POST /signup - Create the user in the database
 router.post("/signup", isLoggedOut, (req, res) => {
   const { username, password, email } = req.body;
 
@@ -39,8 +43,8 @@ router.post("/signup", isLoggedOut, (req, res) => {
     });
   }
 
-  //   ! This use case is using a regular expression to control for special characters and min length
-  /*
+  // //   ! This use case is using a regular expression to control for special characters and min length
+
   const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
 
   if (!regex.test(password)) {
@@ -49,15 +53,14 @@ router.post("/signup", isLoggedOut, (req, res) => {
         "Password needs to have at least 8 chars and must contain at least one number, one lowercase and one uppercase letter.",
     });
   }
-  */
 
   // Search the database for a user with the username submitted in the form
-  User.findOne({ username }).then((found) => {
+  UserModel.findOne({ username }).then((found) => {
     // If the user is found, send the message username is taken
     if (found) {
       return res
         .status(400)
-        .render("auth.signup", { errorMessage: "Username already taken." });
+        .render("auth/signup", { errorMessage: "Username already taken." });
     }
 
     // if user is not found, create a new user - start with hashing the password
@@ -66,7 +69,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
       .then((salt) => bcrypt.hash(password, salt))
       .then((hashedPassword) => {
         // Create a user and save it in the database
-        return User.create({
+        return UserModel.create({
           username,
           password: hashedPassword,
           email,
@@ -74,7 +77,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
       })
       .then((user) => {
         // Bind the user to the session object
-        req.session.user = user;
+        req.session.userId = user._id;
         res.redirect("/");
       })
       .catch((error) => {
@@ -96,10 +99,12 @@ router.post("/signup", isLoggedOut, (req, res) => {
   });
 });
 
+// GET /login - Render the login form
 router.get("/login", isLoggedOut, (req, res) => {
   res.render("auth/login");
 });
 
+// POST /login - Check the user credentials and log them in
 router.post("/login", isLoggedOut, (req, res, next) => {
   const { username, password } = req.body;
 
@@ -118,7 +123,7 @@ router.post("/login", isLoggedOut, (req, res, next) => {
   }
 
   // Search the database for a user with the username submitted in the form
-  User.findOne({ username })
+  UserModel.findOne({ username })
     .then((user) => {
       // If the user isn't found, send the message that user provided wrong credentials
       if (!user) {
@@ -134,8 +139,8 @@ router.post("/login", isLoggedOut, (req, res, next) => {
             errorMessage: "Wrong credentials.",
           });
         }
-        req.session.user = user;
-        // req.session.user = user._id; // ! better and safer but in this case we saving the entire user object
+        // req.session.user = user;
+        req.session.userId = user._id; // ! better and safer but in this case we saving the entire user object
         return res.redirect("/");
       });
     })
@@ -148,6 +153,7 @@ router.post("/login", isLoggedOut, (req, res, next) => {
     });
 });
 
+// GET /logout - Log the user out
 router.get("/logout", isLoggedIn, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -159,4 +165,5 @@ router.get("/logout", isLoggedIn, (req, res) => {
   });
 });
 
+// --------------------------------------------------- //
 module.exports = router;

@@ -1,15 +1,28 @@
 const router = require("express").Router();
-const GameRoom = require("../models/GameRoom.model");
+const GameRoomModel = require("../models/GameRoom.model");
+
+// -------------------------- Routes ------------------------ //
 
 /* GET home page */
 router.get("/", (req, res) => {
-  GameRoom.find({ status: "waiting" }).then((allGameRoomsFromDB) => {
+  const { userId } = req.session;
+  GameRoomModel.find({ status: "waiting" }).then((allGameRoomsFromDB) => {
     // allGameRoomsFromDB.forEach((gameRoom) => {
     //   console.log(gameRoom.status);
     // });
 
+    console.log(allGameRoomsFromDB);
+
+    allGameRoomsFromDB.sort((a, b) => {
+      return b.maxPlayers - a.maxPlayers;
+    });
+
+    // allGameRoomsFromDB.slice(0, 1);
+    // [allGameRoomsFromDB] = allGameRoomsFromDB[0];
+    console.log(typeof allGameRoomsFromDB);
+
     res.render("index", {
-      user: req.session.user,
+      userId: userId,
       gameRooms: allGameRoomsFromDB,
     });
   });
