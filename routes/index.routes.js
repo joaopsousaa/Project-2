@@ -1,15 +1,17 @@
 const router = require("express").Router();
-const GameRoom = require("../models/GameRoom.model");
+const GameRoomModel = require("../models/GameRoom.model");
+
+// -------------------------- Routes ------------------------ //
 
 /* GET home page */
 router.get("/", (req, res) => {
-  GameRoom.find({ status: "waiting" }).then((allGameRoomsFromDB) => {
+  GameRoomModel.find({ status: "waiting" }).then((allGameRoomsFromDB) => {
     // allGameRoomsFromDB.forEach((gameRoom) => {
     //   console.log(gameRoom.status);
     // });
 
     res.render("index", {
-      user: req.session.user,
+      userId: req.session.userId,
       gameRooms: allGameRoomsFromDB,
     });
   });
