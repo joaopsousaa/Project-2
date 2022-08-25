@@ -49,11 +49,11 @@ body {
 header {
   background-color: #007acc !important;
   color: #1e1e1e !important;
-  max-height: 5vh !important;
+  max-height: 8vh !important;
 }
 
 .row.menu {
-  height: 5vh !important;
+  height: 8vh !important;
 }
 
 .nav-link {
@@ -61,7 +61,7 @@ header {
 }
 
 main {
-  min-height: 90vh;
+  min-height: 86vh;
 }
 
 .row.player-card {
@@ -85,12 +85,12 @@ main {
 }
 
 footer {
-  max-height: 5vh !important;
+  max-height: 6vh !important;
 }
 
 footer > div {
   background-color: #1e1e1e !important;
-  height: 5vh !important;
+  height: 6vh !important;
   display: flex;
   justify-content: center;
   align-items: center;

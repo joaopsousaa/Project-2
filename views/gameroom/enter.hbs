@@ -1,12 +1,12 @@
 <div class="container">
-  <h1>{{gameroom.name}}</h1>
+  <h1>{{gameRoom.name}}</h1>
   <div class="row">
     <div class="col-8">
       <h2>Players</h2>
       <div class="card">
         <ul class="list-group list-group-flush">
           <div class="row player-card">
-            {{#each gameroom.players}}
+            {{#each gameRoom.players}}
               <div class="col-6 player-card">
                 <li class="list-group-item">
                   <img
@@ -26,10 +26,14 @@
     </div>
   </div>
 
-  {{#ifEquals gameroom.status "waiting"}}
-    <a href="{{gameroom._id}}/start">Start Game</a>
-    <a href="{{gameroom._id}}/leave">Leave Room</a>
+  {{#ifEquals gameRoom.status "waiting"}}
+    <a href="{{gameRoom._id}}/play">Play</a>
+    <a href="{{gameRoom._id}}/leave">Leave Room</a>
+  {{/ifEquals}}
+
+  {{#ifEquals gameRoom.status "finished"}}
+    <p>Game is Finished</p>
   {{else}}
-    <a href="{{gameroom._id}}/finish">Finish Game</a>
+    <a href="{{gameRoom._id}}/finish">Finish Game</a>
   {{/ifEquals}}
 </div>

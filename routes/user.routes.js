@@ -1,38 +1,55 @@
 const router = require("express").Router();
 const UserModel = require("../models/User.model");
+const GameRoomModel = require("../models/GameRoom.model");
+
 const { isValidObjectId } = require("mongoose");
+const { getOwnedGames } = require("../utils");
 
-const isLoggedOut = require("../middleware/isLoggedOut");
-const isLoggedIn = require("../middleware/isLoggedIn");
+// -------------------------- Routes ------------------------ //
 
-router.get("/:userId", isLoggedIn, (req, res) => {
-  const isValidId = isValidObjectId(req.params.userId);
-  const loggedInUserId = req.session.user._id;
+router.get("/:userId", (req, res) => {
+  const { userId } = req.params;
+  const isValidId = isValidObjectId(userId);
 
-  if (loggedInUserId !== req.params.userId) {
-    return res.status(403).redirect("/");
-  }
+  if (isValidId) {
+    UserModel.findById(userId)
+      .then((user) => {
+        if (!user) {
+          return res.status(400).redirect("/");
+        }
 
-  if (!isValidId) {
-    return res.redirect("/");
-  }
-
-  UserModel.findById(req.params.userId)
-    .then((possibleUser) => {
-      if (!possibleUser) {
-        return res.redirect("/");
-      }
-
-      console.log("possibleUser:", possibleUser.email);
-      res.render("user/user-profile", {
-        user: possibleUser,
-        userId: req.params.userId,
+        GameRoomModel.find({ players: user._id, status: "finished" }).then(
+          (gameRooms) => {
+            getOwnedGames(user.steamId).then((games) => {
+              return res.render("user/profile", { user, gameRooms, games });
+            });
+          }
+        );
+      })
+      .catch((err) => {
+        console.log("err:", err);
+        res.status(500).redirect("/");
       });
-    })
-    .catch((err) => {
-      console.log("err:", err);
-      res.status(500).redirect("/");
-    });
+  } else {
+    UserModel.findOne({ username: userId })
+      .then((user) => {
+        if (!user) {
+          return res.status(400).redirect("/");
+        }
+
+        GameRoomModel.find({ players: user._id, status: "finished" }).then(
+          (gameRooms) => {
+            getOwnedGames(user.steamId).then((games) => {
+              return res.render("user/profile", { user, gameRooms, games });
+            });
+          }
+        );
+      })
+      .catch((err) => {
+        console.log("err:", err);
+        res.status(500).redirect("/");
+      });
+  }
 });
 
 module.exports = router;

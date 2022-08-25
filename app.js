@@ -36,6 +36,9 @@ app.use("/user", userRoutes);
 const gameroomRoutes = require("./routes/gameroom.routes");
 app.use("/gameroom", gameroomRoutes);
 
+const settingsRoutes = require("./routes/settings.routes");
+app.use("/settings", settingsRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 
