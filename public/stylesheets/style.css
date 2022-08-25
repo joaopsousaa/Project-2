@@ -1,12 +1,97 @@
+/* ************* RESET CSS *************
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  display: block;
+  color: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  list-style-type: none;
+}
+
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00b7ff;
+#list-of-gamerooms{
+  margin: 10px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-h1 {
-  color: 15px;
+#headers{
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+#list-of-gamerooms th, td{
+  padding: 12px 15px;
+}
+
+ */
+body {
+  background-color: #2d2d30 !important;
+  color: #e8e8e8 !important;
+}
+
+header {
+  background-color: #007acc !important;
+  color: #1e1e1e !important;
+  max-height: 8vh !important;
+}
+
+.row.menu {
+  height: 8vh !important;
+}
+
+.nav-link {
+  color: #1e1e1e !important;
+}
+
+main {
+  min-height: 86vh;
+}
+
+.row.player-card {
+  margin: 0 !important;
+}
+
+.list-group-item {
+  padding: 0 !important;
+}
+
+.player-card {
+  padding: 0 !important;
+}
+
+.player-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+footer {
+  max-height: 6vh !important;
+}
+
+footer > div {
+  background-color: #1e1e1e !important;
+  height: 6vh !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

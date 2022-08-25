@@ -1,0 +1,53 @@
+<h1>Hello {{user.username}}</h1>
+
+<div>
+  Your email is
+  {{user.email}}. Nice to see you today
+</div>
+
+<div>
+  In case you do not know, your id is
+  {{user._id}}
+</div>
+
+<div>
+  <h2>
+    <a href="/settings">
+      Settings
+    </a>
+  </h2>
+</div>
+
+{{#if gameRooms}}
+  <h3>Previous Game Rooms</h3>
+  <div
+    style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
+  >
+
+    {{#each gameRooms}}
+      <div style="width: 30%; padding: 1%;">
+        <div>
+          <h3>{{name}}</h3>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{/if}}
+
+{{#if games}}
+  <h3>Owned Games</h3>
+  <div
+    style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
+  >
+    {{#each games}}
+      <div style="width: 30%; padding: 1%;">
+        <div>
+          <img src="{{img_logo_url}}" alt={{name}} />
+        </div>
+        <div>
+          <h3>{{name}}</h3>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{/if}}

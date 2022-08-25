@@ -1,0 +1,23 @@
+<form action="/gameroom/create" method="POST">
+    <label>
+        Name:
+        <input type="text" name="name" value="{{name}}" placeholder="Choose a name for your game room">
+    </label>
+    <label>
+        Game:
+        <select name="game" placeholder="Select a game">
+            {{#each games}}
+            <option value="{{this.name}}">{{this.name}}</option>
+            {{/each}}   
+        </select>
+    </label>
+    <label>
+        Min Players:
+        <input type="number" name="minPlayers" value="{{minPlayers}}" min="2" placeholder="Select a min number of players">
+    </label>
+    <label>
+        Max Players:
+        <input type="number" name="maxPlayers" value="{{maxPlayers}}" min="2" placeholder="Select a max number of players">
+    </label>
+    <button type="submit">Submit</button>
+</form>
