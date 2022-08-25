@@ -7,10 +7,9 @@ const mongoose = require("mongoose");
 
 const { MONGO_URI } = require("../utils/consts");
 console.log("MONGO_URI:", MONGO_URI);
-console.log(typeof MONGO_URI);
 
 mongoose
-  .connect("mongodb://127.0.0.1/gamelandia")
+  .connect(MONGO_URI)
   .then((x) => {
     console.log(
       `Connected to Mongo! Database name: "${x.connections[0].name}"`
