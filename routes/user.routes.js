@@ -21,7 +21,12 @@ router.get("/:userId", (req, res) => {
         GameRoomModel.find({ players: user._id, status: "finished" }).then(
           (gameRooms) => {
             getOwnedGames(user.steamId).then((games) => {
-              return res.render("user/profile", { user, gameRooms, games });
+              return res.render("user/profile", {
+                userId,
+                user,
+                gameRooms,
+                games,
+              });
             });
           }
         );
@@ -40,7 +45,12 @@ router.get("/:userId", (req, res) => {
         GameRoomModel.find({ players: user._id, status: "finished" }).then(
           (gameRooms) => {
             getOwnedGames(user.steamId).then((games) => {
-              return res.render("user/profile", { user, gameRooms, games });
+              return res.render("user/profile", {
+                userId,
+                user,
+                gameRooms,
+                games,
+              });
             });
           }
         );

@@ -27,13 +27,16 @@
   </div>
 
   {{#ifEquals gameRoom.status "waiting"}}
-    <a href="{{gameRoom._id}}/play">Play</a>
-    <a href="{{gameRoom._id}}/leave">Leave Room</a>
+    <a href="{{gameRoom._id}}/start">▶️ Start Game Room</a>
+    <a href="{{gameRoom._id}}/leave">🥾 Leave Game Room</a>
+    <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+  {{else}}
+    {{#ifEquals gameRoom.status "finished"}}
+      <p>Game is Finished</p>
+      <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+    {{else}}
+      <a href="{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
+    {{/ifEquals}}
   {{/ifEquals}}
 
-  {{#ifEquals gameRoom.status "finished"}}
-    <p>Game is Finished</p>
-  {{else}}
-    <a href="{{gameRoom._id}}/finish">Finish Game</a>
-  {{/ifEquals}}
 </div>

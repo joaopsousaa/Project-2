@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const UserModel = require("../models/User.model");
 const { resolveVanityURL } = require("../utils");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 // Middleware
 const isLoggedIn = require("../middleware/isLoggedIn");
@@ -13,14 +15,14 @@ router.use(ifUserExists);
 // -------------------------- Routes ------------------------ //
 
 // GET /settings - Render the settings page
-router.get("/", isLoggedIn, (req, res) => {
-  const { user } = req.session;
+router.get("/", (req, res) => {
+  const { user } = req; // req.user is set by the ifUserExists middleware
   res.render("settings/settings", { user });
 });
 
 // POST /settings - Update the user's settings
-router.post("/", isLoggedIn, async (req, res) => {
-  const { user } = req.session;
+router.post("/", async (req, res) => {
+  const { user } = req;
 
   const { username, email, password, confirmPassword, steamVanityUrl } =
     req.body;
@@ -32,7 +34,7 @@ router.post("/", isLoggedIn, async (req, res) => {
     });
   }
 
-  const oneUser = await User.findOne({
+  const oneUser = await UserModel.findOne({
     $or: [{ username }, { email }],
     _id: { $ne: user._id },
   });
@@ -61,21 +63,30 @@ router.post("/", isLoggedIn, async (req, res) => {
     }
   }
 
-  const updatedUser = await User.findByIdAndUpdate(
-    user._id,
-    {
-      username,
-      email,
-      //   password: bcryptjs.hashSync(password, salt),
-      steamVanityUrl,
-      steamId,
-    },
-    { new: true }
-  );
-
-  // req.session.user = updatedUser._id;
-
-  res.redirect("/settings");
+  bcrypt
+    .genSalt(saltRounds)
+    .then((salt) => bcrypt.hash(password, salt))
+    .then((hashedPassword) => {
+      return UserModel.findByIdAndUpdate(
+        user._id,
+        {
+          username,
+          email,
+          password: hashedPassword,
+          steamVanityUrl,
+          steamId,
+        },
+        { new: true }
+      )
+        .then((user) => {
+          if (!user) res.redirect("/");
+          res.redirect("/settings");
+        })
+        .catch((err) => {
+          console.log(err);
+          res.redirect("/");
+        });
+    });
 });
 
 // ----------------------------------------------------------- //

@@ -50,8 +50,8 @@ module.exports = (app) => {
     return arg1 === arg2 ? options.fn(this) : options.inverse(this);
   });
 
-  hbs.registerHelper("concat", function (...args) {
-    return args.slice(0, -1).join("");
+  hbs.registerHelper("ifNotEquals", function (arg1, arg2, options) {
+    return arg1 !== arg2 ? options.fn(this) : options.inverse(this);
   });
   // AHandles access to the public folder
   app.use(express.static(path.join(__dirname, "..", "public")));

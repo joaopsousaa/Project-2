@@ -5,13 +5,14 @@ const GameRoomModel = require("../models/GameRoom.model");
 
 /* GET home page */
 router.get("/", (req, res) => {
+  const { userId } = req.session;
   GameRoomModel.find({ status: "waiting" }).then((allGameRoomsFromDB) => {
     // allGameRoomsFromDB.forEach((gameRoom) => {
     //   console.log(gameRoom.status);
     // });
 
     res.render("index", {
-      userId: req.session.userId,
+      userId: userId,
       gameRooms: allGameRoomsFromDB,
     });
   });
