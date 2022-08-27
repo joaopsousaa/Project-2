@@ -230,6 +230,36 @@ router.get("/:gameRoomId/destroy", (req, res) => {
   });
 });
 
+//Chat GET REQUEST
+router.get("/:gameRoomId/chat", (req, res) => {
+  const { gameRoomId } = req.params;
+  const { user } = req;
+  const isValidId = isValidObjectId(gameRoomId);
+
+  if (!isValidId) return res.status(400).redirect("/");
+
+  res.render("gameroom/chat", { user, gameRoomId });
+});
+
+//Chat POST REQUEST
+router.post("/:gameRoomId/chat", (req, res) => {
+  const { gameRoomId } = req.params;
+  const msgInput = req.body;
+
+  console.log(msgInput);
+  console.log("gameRoomId:", gameRoomId);
+
+  GameRoomModel.findByIdAndUpdate(
+    gameRoomId,
+    {
+      $push: { chatRoom: msgInput },
+    },
+    { new: true }
+  ).then((gameroom) => {
+    res.render("gameroom/chat", { gameRoomId });
+  });
+});
+
 // ----------------------------------------------------------- //
 
 module.exports = router;

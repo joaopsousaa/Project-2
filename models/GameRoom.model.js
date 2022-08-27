@@ -1,4 +1,4 @@
-const { Schema, model, SchemaType } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const GameRoomSchema = new Schema(
   {
@@ -32,6 +32,12 @@ const GameRoomSchema = new Schema(
       enum: ["waiting", "playing", "finished"],
       default: "waiting",
     },
+    chatRoom: [
+      {
+        type: Object,
+        default: [],
+      },
+    ],
   },
   {
     timestamps: true,
