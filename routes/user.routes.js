@@ -19,13 +19,20 @@ router.get("/:userId", (req, res) => {
         }
 
         GameRoomModel.find({ players: user._id, status: "finished" }).then(
-          (gameRooms) => {
+          (gameRoomsFinished) => {
             getOwnedGames(user.steamId).then((games) => {
-              return res.render("user/profile", {
-                userId,
-                user,
-                gameRooms,
-                games,
+              GameRoomModel.find({
+                players: user._id,
+                status: { $ne: "finished" },
+              }).then((gameRoomsPlaying) => {
+                console.log("gameRoomsPlaying:", gameRoomsPlaying);
+                return res.render("user/profile", {
+                  userId,
+                  user,
+                  gameRoomsFinished,
+                  gameRoomsPlaying,
+                  games,
+                });
               });
             });
           }
@@ -43,13 +50,20 @@ router.get("/:userId", (req, res) => {
         }
 
         GameRoomModel.find({ players: user._id, status: "finished" }).then(
-          (gameRooms) => {
+          (gameRoomsFinished) => {
             getOwnedGames(user.steamId).then((games) => {
-              return res.render("user/profile", {
-                userId,
-                user,
-                gameRooms,
-                games,
+              GameRoomModel.find({
+                players: user._id,
+                status: { $ne: "finished" },
+              }).then((gameRoomsPlaying) => {
+                console.log("gameRoomsPlaying:", gameRoomsPlaying);
+                return res.render("user/profile", {
+                  userId,
+                  user,
+                  gameRoomsFinished,
+                  gameRoomsPlaying,
+                  games,
+                });
               });
             });
           }

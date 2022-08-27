@@ -41,27 +41,11 @@ body {
 }
 
  */
-body {
-  background-color: #2d2d30 !important;
-  color: #e8e8e8 !important;
-}
 
-header {
-  background-color: #007acc !important;
-  color: #1e1e1e !important;
-  max-height: 8vh !important;
-}
-
-.row.menu {
-  height: 8vh !important;
-}
-
-.nav-link {
-  color: #1e1e1e !important;
-}
-
-main {
-  min-height: 86vh;
+:root {
+  --bs-primary: #007acc !important;
+  --bs-body-color: #e8e8e8 !important;
+  --bs-body-bg: #2d2d30 !important;
 }
 
 .row.player-card {

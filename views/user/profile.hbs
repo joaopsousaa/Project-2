@@ -18,13 +18,27 @@
   </h2>
 </div>
 
-{{#if gameRooms}}
+{{#if gameRoomsPlaying}}
+  <h3>Current Game Room</h3>
+  <div
+    style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
+  >
+    <div style="width: 30%; padding: 1%;">
+      <div>
+        <h3>{{gameRoomsPlaying.0.name}}</h3>
+        <a href="/gameroom/{{gameRoomsPlaying.0._id}}">Open</a>
+      </div>
+    </div>
+  </div>
+{{/if}}
+
+{{#if gameRoomsFinished}}
   <h3>Previous Game Rooms</h3>
   <div
     style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
   >
 
-    {{#each gameRooms}}
+    {{#each gameRoomsFinished}}
       <div style="width: 30%; padding: 1%;">
         <div>
           <h3>{{name}}</h3>
