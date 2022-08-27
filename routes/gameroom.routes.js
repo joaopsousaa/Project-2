@@ -28,16 +28,16 @@ router.get("/create", (req, res) => {
   GameRoomModel.find({ players: user._id, status: { $ne: "finished" } }).then(
     (gameRooms) => {
       if (gameRooms.length > 0) {
-        return res.redirect("/");
+        return res.redirect(`/gameroom/${gameRooms[0]._id}`);
       }
+
+      const applistJson = fs.readFileSync("./applist.json");
+
+      const games = JSON.parse(applistJson).applist.apps;
+
+      res.render("gameroom/create", { games });
     }
   );
-
-  const applistJson = fs.readFileSync("./applist.json");
-
-  const games = JSON.parse(applistJson).applist.apps;
-
-  res.render("gameroom/create", { games });
 });
 
 // POST /create --> Create a new game room
