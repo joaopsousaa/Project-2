@@ -14,7 +14,7 @@ const socket = io();
 socket.on("message", (message) => {
   console.log(message);
 
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  // chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
 chatForm.addEventListener("submit", (e) => {
@@ -22,6 +22,8 @@ chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
   //Get message text
   let msg = e.target.elements.msg.value;
+
+  // let gameRoomId = new URLSearchParams(window.location.).get("id");
 
   //Emit message to server
   socket.emit("chatMessage", msg);

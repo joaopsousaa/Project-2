@@ -17,7 +17,14 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    steamVanityUrl: String,
+    steamVanityUrl: {
+      type: String,
+      default: null,
+    },
+    steamId: {
+      type: String,
+      default: null,
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

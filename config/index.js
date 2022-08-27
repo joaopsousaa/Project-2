@@ -26,7 +26,9 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
 // Connects the mongo uri to maintain the same naming structure
-const MONGO_URI = require("../utils/consts");
+const { MONGO_URI } = require("../utils/consts");
+
+const hbs = require("hbs");
 
 // Middleware configuration
 module.exports = (app) => {
@@ -42,6 +44,19 @@ module.exports = (app) => {
   app.set("views", path.join(__dirname, "..", "views"));
   // Sets the view engine to handlebars
   app.set("view engine", "hbs");
+
+  // Configure hbs helpers
+  hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
+    return arg1 === arg2 ? options.fn(this) : options.inverse(this);
+  });
+
+  hbs.registerHelper("ifNotEquals", function (arg1, arg2, options) {
+    return arg1 !== arg2 ? options.fn(this) : options.inverse(this);
+  });
+
+  hbs.registerHelper("ifIdEquals", function (arg1, arg2, options) {
+    return arg1.equals(arg2) ? options.fn(this) : options.inverse(this);
+  });
   // AHandles access to the public folder
   app.use(express.static(path.join(__dirname, "..", "public")));
 
@@ -61,4 +76,12 @@ module.exports = (app) => {
       }),
     })
   );
+
+  app.use((req, res, next) => {
+    if (req.session.userId) {
+      res.locals.isLoggedIn = true;
+      // res.locals.user = req.session.user;
+    }
+    next();
+  });
 };

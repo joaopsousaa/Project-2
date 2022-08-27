@@ -1,0 +1,14 @@
+<h3>Room Chat</h3>
+<div class="chat-msg-field">
+  <div class="chat-messages"></div></div>
+<form action="/gameroom/{{gameRoomId}}/chat" id="chat-form" method="post">
+  <input
+    id="msg"
+    name="msgInput"
+    type="text"
+    placeholder="Enter Message"
+    required
+    autocomplete="off"
+  />
+  <button type="submit" class="btn btn-primary">Send</button>
+</form>
