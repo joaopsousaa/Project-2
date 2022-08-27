@@ -17,7 +17,7 @@ router.use(ifUserExists);
 // GET /settings - Render the settings page
 router.get("/", (req, res) => {
   const { user } = req; // req.user is set by the ifUserExists middleware
-  res.render("settings/settings", { user });
+  res.render("settings/settings", { userId: user._id, user });
 });
 
 // POST /settings - Update the user's settings
@@ -63,30 +63,51 @@ router.post("/", async (req, res) => {
     }
   }
 
-  bcrypt
-    .genSalt(saltRounds)
-    .then((salt) => bcrypt.hash(password, salt))
-    .then((hashedPassword) => {
-      return UserModel.findByIdAndUpdate(
-        user._id,
-        {
-          username,
-          email,
-          password: hashedPassword,
-          steamVanityUrl,
-          steamId,
-        },
-        { new: true }
-      )
-        .then((user) => {
-          if (!user) res.redirect("/");
-          res.redirect("/settings");
-        })
-        .catch((err) => {
-          console.log(err);
-          res.redirect("/");
-        });
-    });
+  if (password) {
+    bcrypt
+      .genSalt(saltRounds)
+      .then((salt) => bcrypt.hash(password, salt))
+      .then((hashedPassword) => {
+        return UserModel.findByIdAndUpdate(
+          user._id,
+          {
+            username,
+            email,
+            password: hashedPassword,
+            steamVanityUrl,
+            steamId,
+          },
+          { new: true }
+        )
+          .then((user) => {
+            if (!user) res.redirect("/");
+            res.redirect("/settings");
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect("/");
+          });
+      });
+  } else {
+    UserModel.findByIdAndUpdate(
+      user._id,
+      {
+        username,
+        email,
+        steamVanityUrl,
+        steamId,
+      },
+      { new: true }
+    )
+      .then((user) => {
+        if (!user) res.redirect("/");
+        res.redirect("/settings");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.redirect("/");
+      });
+  }
 });
 
 // ----------------------------------------------------------- //

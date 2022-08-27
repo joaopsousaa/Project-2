@@ -1,7 +1,7 @@
 <h1>{{appTitle}} 🚀</h1>
 <p>Welcome to Gamelandia!</p>
 
-{{#if gameRooms}}
+{{!-- {{#if gameRooms}}
   <h2>Game Rooms Status Waiting</h2>
   <input
     type="text"
@@ -28,4 +28,23 @@
       </tr>
     {{/each}}
   </table>
+{{/if}} --}}
+
+{{#if gameRooms}}
+  <div class="container">
+    <div class="row">
+      {{#each gameRooms}}
+        <div class="col-sm-12 col-md-4 col-lg-3 m-2">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{name}}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{game}}</h6>
+              <p>{{status}}<br />{{players.length}}/{{maxPlayers}}</p>
+              <a href="/gameroom/{{_id}}" class="card-link">Join</a>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
 {{/if}}
