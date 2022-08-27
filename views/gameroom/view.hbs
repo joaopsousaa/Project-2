@@ -6,7 +6,7 @@
       <div class="card">
         <ul class="list-group list-group-flush">
           <div class="row player-card">
-            {{#each gameRoom.players}}
+            {{#each players}}
               <div class="col-6 player-card">
                 <li class="list-group-item">
                   <img
@@ -14,7 +14,7 @@
                     alt=""
                     class="player-image"
                   />
-                  Player's Name</li>
+                  {{username}}</li>
               </div>
             {{/each}}
           </div>
@@ -27,13 +27,19 @@
   </div>
 
   {{#ifEquals gameRoom.status "waiting"}}
-    <a href="{{gameRoom._id}}/start">▶️ Start Game Room</a>
+    {{#ifIdEquals userId gameRoom.owner}}
+      <a href="{{gameRoom._id}}/start">▶️ Start Game Room</a>
+    {{/ifIdEquals}}
     <a href="{{gameRoom._id}}/leave">🥾 Leave Game Room</a>
-    <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+    {{#ifIdEquals userId gameRoom.owner}}
+      <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+    {{/ifIdEquals}}
   {{else}}
     {{#ifEquals gameRoom.status "finished"}}
       <p>Game is Finished</p>
-      <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+      {{#ifIdEquals userId gameRoom.owner}}
+        <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+      {{/ifIdEquals}}
     {{else}}
       <a href="{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
     {{/ifEquals}}

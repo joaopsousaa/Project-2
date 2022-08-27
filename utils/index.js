@@ -1,4 +1,5 @@
 const axios = require("axios");
+const UserModel = require("../models/User.model");
 const { STEAM_API_URL, STEAM_API_KEY, STEAM_ICON_URL } = require("./consts");
 
 async function resolveVanityURL(vanityUrl) {
@@ -39,7 +40,38 @@ async function getOwnedGames(steamId) {
   }
 }
 
+async function getGameRoomPlayers(gameRoom) {
+  const gameRoomPlayers = gameRoom.players;
+  let players = [];
+
+  try {
+    for (const player of gameRoomPlayers) {
+      const user = await UserModel.findById(player);
+      players.push(user);
+    }
+
+    return players;
+  } catch (error) {
+    console.log(error);
+  }
+
+  // console.log(gameRoomPlayers);
+
+  // gameRoomPlayers.forEach((player) => {
+  //   console.log(player);
+  //   UserModel.findById(player).then((user) => {
+  //     console.log("user", user);
+  //     players.push(user);
+  //   });
+  // });
+
+  // console.log("PLAYERS: ", players);
+
+  // return players;
+}
+
 module.exports = {
   resolveVanityURL,
   getOwnedGames,
+  getGameRoomPlayers,
 };

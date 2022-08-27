@@ -8,7 +8,6 @@
 - Profile / Home
   - Suggest gamerooms to join (based on games you own)
 - Home
-  - Search for gamerooms by game
 
 ### Optionals
 

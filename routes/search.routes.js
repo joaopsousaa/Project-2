@@ -1,15 +1,30 @@
-const router = require("./auth.routes");
+const router = require("express").Router();
 
-router.post("/search", (req, res) => {
+// Models
+const GameRoomModel = require("../models/GameRoom.model");
+
+// ------------------- Routes ------------------- //
+
+// POST /search --> Search for a game room
+router.post("/", (req, res) => {
   const { search } = req.body;
 
-  if (!search) {
-    return res.render("search/search", {
-      errorMessage: "Please provide a search term.",
-    });
-  }
+  console.log(search);
 
-  GameRoomModel.find(search).then((gamerooms) => {
-    res.render("search", { gameRooms });
-  });
+  GameRoomModel.find({
+    $or: [
+      { name: { $regex: search, $options: "i" } },
+      { game: { $regex: search, $options: "i" } },
+    ],
+    status: "waiting",
+  })
+    .then((gameRooms) => {
+      res.render("search", { gameRooms });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
+
+// ---------------------------------------------- //
+module.exports = router;
