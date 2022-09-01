@@ -1,6 +1,4 @@
 const app = require("./app");
-const GameRoom = require("./models/GameRoom.model");
-const dbConnection = require("./db/index.js");
 
 // Socket.io config:
 const http = require("http");
