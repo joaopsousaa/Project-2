@@ -8,12 +8,10 @@ const GameRoomModel = require("../models/GameRoom.model");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const ifUserExists = require("../middleware/ifUserExists");
 
-// Mongoose
+//Utils
+const { getGameRoomPlayers, getKnownGames } = require("../utils");
 const { isValidObjectId } = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
-
-//Utils
-const { getGameRoomPlayers } = require("../utils");
 
 // ---------------------- Router Configs ---------------------- //
 router.use(isLoggedIn);
@@ -24,31 +22,27 @@ router.use(ifUserExists);
 // GET /create --> Render the create game room page
 router.get("/create", (req, res) => {
   const { user } = req;
+  const games = getKnownGames();
 
-  GameRoomModel.find({ players: user._id, status: { $ne: "finished" } }).then(
-    (gameRooms) => {
-      if (gameRooms.length > 0) {
-        return res.redirect(`/gameroom/${gameRooms[0]._id}`);
-      }
+  GameRoomModel.findOne({
+    players: user._id,
+    status: { $ne: "finished" },
+  }).then((anyGameRoom) => {
+    if (anyGameRoom) return res.redirect(`/gameroom/${gameRooms._id}`);
 
-      const applistJson = fs.readFileSync("./applist.json");
-
-      const games = JSON.parse(applistJson).applist.apps;
-
-      res.render("gameroom/create", { games });
-    }
-  );
+    res.render("gameroom/create", { userId: user._id, games });
+  });
 });
 
 // POST /create --> Create a new game room
 router.post("/create", (req, res) => {
   const { user } = req;
   const { game } = req.body;
-  let { name, minPlayers = 2, maxPlayers = 2 } = req.body;
-
-  if (!name) {
-    name = `${user.username}'s Game Room`;
-  }
+  let {
+    name = `${user.username}'s Game Room`,
+    minPlayers = 2,
+    maxPlayers = 2,
+  } = req.body;
 
   if (!game) {
     return res.status(400).render("gameroom/create", {

@@ -37,3 +37,32 @@ chatForm.addEventListener("submit", (e) => {
   e.target.elements.msg.value = "";
   e.target.elements.msg.focus();
 });
+
+// Validate Game on Create Game Room Form
+async function validateGame() {
+  const game = document.getElementById("game").value;
+
+  if (game === "") return;
+
+  const minPlayers = document.getElementById("minPlayers");
+  const maxPlayers = document.getElementById("maxPlayers");
+
+  const gamesJson = await fetch("/games");
+  const games = await gamesJson.json();
+
+  const gameInfo = games.find((g) => g.name.match(new RegExp(game, "i")));
+
+  if (!gameInfo) return;
+
+  console.log(minPlayers.value);
+
+  minPlayers.value = gameInfo.minPlayers;
+  minPlayers.min = gameInfo.minPlayers;
+  minPlayers.max = gameInfo.maxPlayers;
+
+  maxPlayers.value = gameInfo.maxPlayers;
+  maxPlayers.min = gameInfo.minPlayers;
+  maxPlayers.max = gameInfo.maxPlayers;
+
+  console.log(gameInfo);
+}
