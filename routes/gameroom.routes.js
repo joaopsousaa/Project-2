@@ -27,8 +27,8 @@ router.get("/create", (req, res) => {
   GameRoomModel.findOne({
     players: user._id,
     status: { $ne: "finished" },
-  }).then((anyGameRoom) => {
-    if (anyGameRoom) return res.redirect(`/gameroom/${gameRooms._id}`);
+  }).then((gameRoom) => {
+    if (gameRoom) return res.redirect(`/gameroom/${gameRoom._id}`);
 
     res.render("gameroom/create", { userId: user._id, games });
   });
@@ -44,23 +44,27 @@ router.post("/create", (req, res) => {
     maxPlayers = 2,
   } = req.body;
 
+  const games = getKnownGames();
+
   if (!game) {
     return res.status(400).render("gameroom/create", {
       errorMessage: "Please choose a game.",
+      games,
     });
   }
 
-  if (minPlayers < 2) {
+  if (+minPlayers < 2) {
     minPlayers = 2;
   }
 
-  if (maxPlayers < 2) {
+  if (+maxPlayers < 2) {
     maxPlayers = 2;
   }
 
-  if (maxPlayers < minPlayers) {
+  if (+maxPlayers < +minPlayers) {
     return res.status(400).render("gameroom/create", {
-      errorMessage: "Your Max Players can't be smaller than your Min Players",
+      errorMessage: "Max Players must be greater than Min Players.",
+      games,
     });
   }
 
