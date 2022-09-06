@@ -36,9 +36,9 @@
 
   {{#ifEquals gameRoom.status "waiting"}}
     {{#ifIdEquals userId gameRoom.owner}}
-      <a href="{{gameRoom._id}}/start">▶️ Start Game Room</a>
+      <a href="/gameroom/{{gameRoom._id}}/start">▶️ Start Game Room</a>
     {{/ifIdEquals}}
-    <a href="{{gameRoom._id}}/leave">🥾 Leave Game Room</a>
+    <a href="/gameroom/{{gameRoom._id}}/leave">🥾 Leave Game Room</a>
     {{#ifIdEquals userId gameRoom.owner}}
       <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
     {{/ifIdEquals}}
@@ -46,10 +46,10 @@
     {{#ifEquals gameRoom.status "finished"}}
       <p>Game is Finished</p>
       {{#ifIdEquals userId gameRoom.owner}}
-        <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+        <a href="/gameroom/{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
       {{/ifIdEquals}}
     {{else}}
-      <a href="{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
+      <a href="/gameroom/{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
     {{/ifEquals}}
   {{/ifEquals}}
 

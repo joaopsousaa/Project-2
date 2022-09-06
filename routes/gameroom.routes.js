@@ -49,6 +49,7 @@ router.post("/create", (req, res) => {
   if (!game) {
     return res.status(400).render("gameroom/create", {
       errorMessage: "Please choose a game.",
+      userId: user._id,
       games,
     });
   }
@@ -178,9 +179,20 @@ router.get("/:gameRoomId/start", (req, res) => {
 
   if (!isValidId) return res.status(400).redirect("/");
 
-  GameRoomModel.findById(gameRoomId).then((gameroom) => {
-    if (!gameroom) return res.status(400).redirect("/");
-    if (!gameroom.owner.equals(ObjectId(user._id)))
+  GameRoomModel.findById(gameRoomId).then((gameRoom) => {
+    if (!gameRoom) return res.status(400).redirect("/");
+    if (gameRoom.players.length < gameRoom.minPlayers) {
+      getGameRoomPlayers(gameRoom).then((players) => {
+        return res.render("gameroom/view", {
+          userId: user._id,
+          gameRoom,
+          players,
+          errorMessage: "Not enough players to start the game.",
+        });
+      });
+      return;
+    }
+    if (!gameRoom.owner.equals(ObjectId(user._id)))
       return res.status(400).redirect(`/gameroom/${gameRoomId}`);
     GameRoomModel.findByIdAndUpdate(gameRoomId, {
       status: "playing",
