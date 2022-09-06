@@ -249,8 +249,36 @@ router.get("/:gameRoomId/chat", (req, res) => {
 
   if (!isValidId) return res.status(400).redirect("/");
 
-  res.render("gameroom/chat", { user, gameRoomId });
+  GameRoomModel.findById(gameRoomId)
+    .then((gameRoom) => {
+      getGameRoomPlayers(gameRoom).then((players) => {
+        return res.render("gameroom/chat", {
+          user,
+          gameRoomId,
+          players,
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).redirect("/");
+    });
+  // res.render("gameroom/chat", {
+  //   user,
+  //   gameRoomId,
+  // });
 });
+
+// router.get("/kick/:userId", (req, res) => {
+//   const { gameRoomId } = req.params;
+//   const { userId } = req.params;
+//   const { user } = req;
+//   // const isValidId = isValidObjectId(gameRoomId);
+
+//   // if (!isValidId) return res.redirect("/");
+
+//   return res.render("gameroom/kick", { user, gameRoomId, players });
+// });
 
 //Chat POST REQUEST
 // router.post("/:gameRoomId/chat", (req, res) => {
