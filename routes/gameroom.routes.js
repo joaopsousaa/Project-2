@@ -9,12 +9,10 @@ const ChatModel = require("../models/Chat.model");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const ifUserExists = require("../middleware/ifUserExists");
 
-// Mongoose
+//Utils
+const { getGameRoomPlayers, getKnownGames } = require("../utils");
 const { isValidObjectId } = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
-
-//Utils
-const { getGameRoomPlayers } = require("../utils");
 
 // ---------------------- Router Configs ---------------------- //
 router.use(isLoggedIn);
@@ -25,49 +23,50 @@ router.use(ifUserExists);
 // GET /create --> Render the create game room page
 router.get("/create", (req, res) => {
   const { user } = req;
+  const games = getKnownGames();
 
-  GameRoomModel.find({ players: user._id, status: { $ne: "finished" } }).then(
-    (gameRooms) => {
-      if (gameRooms.length > 0) {
-        return res.redirect(`/gameroom/${gameRooms[0]._id}`);
-      }
+  GameRoomModel.findOne({
+    players: user._id,
+    status: { $ne: "finished" },
+  }).then((gameRoom) => {
+    if (gameRoom) return res.redirect(`/gameroom/${gameRoom._id}`);
 
-      const applistJson = fs.readFileSync("./applist.json");
-
-      const games = JSON.parse(applistJson).applist.apps;
-
-      res.render("gameroom/create", { games });
-    }
-  );
+    res.render("gameroom/create", { userId: user._id, games });
+  });
 });
 
 // POST /create --> Create a new game room
 router.post("/create", (req, res) => {
   const { user } = req;
   const { game } = req.body;
-  let { name, minPlayers = 2, maxPlayers = 2 } = req.body;
+  let {
+    name = `${user.username}'s Game Room`,
+    minPlayers = 2,
+    maxPlayers = 2,
+  } = req.body;
 
-  if (!name) {
-    name = `${user.username}'s Game Room`;
-  }
+  const games = getKnownGames();
 
   if (!game) {
     return res.status(400).render("gameroom/create", {
       errorMessage: "Please choose a game.",
+      userId: user._id,
+      games,
     });
   }
 
-  if (minPlayers < 2) {
+  if (+minPlayers < 2) {
     minPlayers = 2;
   }
 
-  if (maxPlayers < 2) {
+  if (+maxPlayers < 2) {
     maxPlayers = 2;
   }
 
-  if (maxPlayers < minPlayers) {
+  if (+maxPlayers < +minPlayers) {
     return res.status(400).render("gameroom/create", {
-      errorMessage: "Your Max Players can't be smaller than your Min Players",
+      errorMessage: "Max Players must be greater than Min Players.",
+      games,
     });
   }
 
@@ -181,9 +180,20 @@ router.get("/:gameRoomId/start", (req, res) => {
 
   if (!isValidId) return res.status(400).redirect("/");
 
-  GameRoomModel.findById(gameRoomId).then((gameroom) => {
-    if (!gameroom) return res.status(400).redirect("/");
-    if (!gameroom.owner.equals(ObjectId(user._id)))
+  GameRoomModel.findById(gameRoomId).then((gameRoom) => {
+    if (!gameRoom) return res.status(400).redirect("/");
+    if (gameRoom.players.length < gameRoom.minPlayers) {
+      getGameRoomPlayers(gameRoom).then((players) => {
+        return res.render("gameroom/view", {
+          userId: user._id,
+          gameRoom,
+          players,
+          errorMessage: "Not enough players to start the game.",
+        });
+      });
+      return;
+    }
+    if (!gameRoom.owner.equals(ObjectId(user._id)))
       return res.status(400).redirect(`/gameroom/${gameRoomId}`);
     GameRoomModel.findByIdAndUpdate(gameRoomId, {
       status: "playing",

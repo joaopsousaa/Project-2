@@ -1,35 +1,58 @@
-<p>{{errorMessage}}</p>
 <div class="container">
-  <form action="/settings" method="post">
-    <label>
-      Username:
-      <input type="text" name="username" value="{{user.username}}" />
-    </label>
-    <br />
-    <label>
-      Email:
-      <input type="text" name="email" value="{{user.email}}" />
-    </label>
-    <br />
-    <label>
-      Password:
-      <input type="password" name="password" />
-    </label>
-    <br />
-    <label>
-      Confirm Password:
-      <input type="password" name="confirmPassword" />
-    </label>
-    <br />
-    <label>
-      Steam Link: https://steamcommunity.com/id/
-      <input
-        type="text"
-        name="steamVanityUrl"
-        value="{{user.steamVanityUrl}}"
-      />
-    </label>
-    <br />
-    <button type="submit">Save</button>
-  </form>
+  <div class="row justify-content-center">
+    <div class="col-9 col-md-7 col-lg-5 mt-3">
+      <h3 class="mb-3">Settings</h3>
+      <form action="/settings" method="post">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            name="username"
+            id="username"
+            value="{{user.username}}"
+          />
+          <label for="username">Username</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            value="{{user.email}}"
+          />
+          <label for="email">Email</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            id="password"
+          />
+          <label for="password">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="password"
+            class="form-control"
+            name="confirmPassword"
+            id="confirmPassword"
+          />
+          <label for="confirmPassword">Confirm Password</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            name="steamVanityUrl"
+            id="steamVanityUrl"
+            value="{{user.steamVanityUrl}}"
+          />
+          <label for="steamVanityUrl">Steam Link</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
 </div>

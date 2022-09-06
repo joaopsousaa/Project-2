@@ -1,4 +1,5 @@
 const app = require("./app");
+
 const GameRoom = require("./models/GameRoom.model");
 const ChatModel = require("./models/Chat.model");
 const dbConnection = require("./db/index.js");

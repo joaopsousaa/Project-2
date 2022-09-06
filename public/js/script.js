@@ -19,28 +19,10 @@ const inputGameRoomId = document.getElementById("chat-gameroom-id");
 let roomId = inputGameRoomId.value;
 let userId = inputUserId.value;
 
-// let displayMessage = (message) => {
-//   $("#chat").prepend(
-//     $("<li>").html(`
-// <div class="message ${getCurrentUserClass(message.user)}">
-// ${message.content}
-// </div>`)
-//   );
-// };
-
-// let getCurrentUserClass = (id) => {
-//   let userId = inputUserId.value;
-//   return userId === id ? "current-user" : "";
-// };
-// socket.on("id", (socketId) => {
-//   inputUserId.value = socketId;
-// });
-
 socket.emit("join", roomId);
 
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  // const gameRoomId = window.location.pathname.split("/")[2];
   let text = input.value;
   console.log(text);
   userId = inputUserId.value;
@@ -80,15 +62,33 @@ socket.on("previousMessages", (previousMessages) => {
     });
     return;
   }
-  // let li = document.createElement("li");
-  // li.textContent = previousMessages.message;
-  // messages.appendChild(li);
-  // window.scrollTo(0, document.body.scrollHeight);
-  // console.log(previousMessages);
 });
 
-// kickPlayer.addEventListener("click", (e) => {
-//   e.preventDefault();
-//   let userToBeKickedId = kickPlayer.getAttribute("href").split("/")[2];
-//   socket.emit("kickedPlayer", userToBeKickedId);
-// });
+// Validate Game on Create Game Room Form
+async function validateGame() {
+  const game = document.getElementById("game").value;
+
+  if (game === "") return;
+
+  const minPlayers = document.getElementById("minPlayers");
+  const maxPlayers = document.getElementById("maxPlayers");
+
+  const gamesJson = await fetch("/games");
+  const games = await gamesJson.json();
+
+  const gameInfo = games.find((g) => g.name.match(new RegExp(game, "i")));
+
+  if (!gameInfo) return;
+
+  console.log(minPlayers.value);
+
+  minPlayers.value = gameInfo.minPlayers;
+  minPlayers.min = gameInfo.minPlayers;
+  minPlayers.max = gameInfo.maxPlayers;
+
+  maxPlayers.value = gameInfo.maxPlayers;
+  maxPlayers.min = gameInfo.minPlayers;
+  maxPlayers.max = gameInfo.maxPlayers;
+
+  console.log(gameInfo);
+}

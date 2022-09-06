@@ -1,0 +1,95 @@
+{
+  "games": [
+    {
+      "appid": 945360,
+      "name": "Among Us",
+      "minPlayers": 2,
+      "maxPlayers": 100
+    },
+    {
+      "appid": 1172470,
+      "name": "Apex Legends",
+      "minPlayers": 2,
+      "maxPlayers": 3
+    },
+    {
+      "appid": 252950,
+      "name": "Rocket League",
+      "minPlayers": 2,
+      "maxPlayers": 8
+    },
+    {
+      "appid": 359550,
+      "name": "Tom Clancy's Rainbow Six Siege",
+      "minPlayers": 2,
+      "maxPlayers": 10
+    },
+    {
+      "appid": 730,
+      "name": "Counter-Strike: Global Offensive",
+      "minPlayers": 2,
+      "maxPlayers": 10
+    },
+    {
+      "appid": 1097150,
+      "name": "Fall Guys",
+      "minPlayers": 2,
+      "maxPlayers": 4
+    },
+    {
+      "appid": 381210,
+      "name": "Dead by Daylight",
+      "minPlayers": 2,
+      "maxPlayers": 5
+    },
+    {
+      "appid": 1790360,
+      "name": "Grand Theft Gato: Vice Kitty",
+      "minPlayers": 2,
+      "maxPlayers": 30
+    },
+    {
+      "appid": 1085660,
+      "name": "Destiny 2",
+      "minPlayers": 2,
+      "maxPlayers": 3
+    },
+    {
+      "appid": 271590,
+      "name": "Grand Theft Auto Online",
+      "minPlayers": 2,
+      "maxPlayers": 30
+    },
+    {
+      "appid": 1404210,
+      "alternativeAppid": 1174180,
+      "name": "Red Dead Online",
+      "minPlayers": 2,
+      "maxPlayers": 30
+    },
+    {
+      "appid": 252490,
+      "name": "Rust",
+      "minPlayers": 2,
+      "maxPlayers": 8
+    },
+    {
+      "appid": 1144200,
+      "name": "Ready or Not",
+      "minPlayers": 2,
+      "maxPlayers": 4
+    },
+    {
+      "appid": 1172620,
+      "name": "Sea of Thieves",
+      "minPlayers": 2,
+      "maxPlayers": 4
+    },
+    {
+      "appid": 1818750,
+      "name": "MultiVersus",
+      "minPlayers": 2,
+      "maxPlayers": 4
+    }
+  ]
+}
