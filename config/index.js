@@ -57,6 +57,17 @@ module.exports = (app) => {
   hbs.registerHelper("ifIdEquals", function (arg1, arg2, options) {
     return arg1.equals(arg2) ? options.fn(this) : options.inverse(this);
   });
+
+  hbs.registerHelper("times", function (n, block) {
+    let acc = "";
+
+    for (let i = 0; i < n; i++) acc += block.fn(i);
+
+    console.log(acc);
+
+    return acc;
+  });
+
   // AHandles access to the public folder
   app.use(express.static(path.join(__dirname, "..", "public")));
 

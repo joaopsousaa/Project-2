@@ -3,10 +3,16 @@ const axios = require("axios");
 const fs = require("fs");
 
 // Variables
-const { STEAM_API_URL, STEAM_API_KEY, STEAM_ICON_URL } = require("./consts");
+const {
+  STEAM_API_URL,
+  STEAM_STORE_API_URL,
+  STEAM_API_KEY,
+  STEAM_ICON_URL,
+} = require("./consts");
 
 // Models
 const UserModel = require("../models/User.model");
+const ChatModel = require("../models/Chat.model");
 
 async function resolveVanityURL(vanityUrl) {
   // If the vanity url doesn't exist, return
@@ -88,9 +94,83 @@ function getKnownGames() {
   return games;
 }
 
+async function getMessageHistory(roomId) {
+  const messages = await ChatModel.find({ room: roomId });
+
+  try {
+    messages.forEach(async (message) => {
+      message.username = (await UserModel.findById(message.user)).username;
+      console.log(message.username);
+    });
+
+    messages.sort((a, b) => {
+      return a.createdAt - b.createdAt;
+    });
+
+    console.log(messages);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return messages;
+}
+
+async function getNewsForAppRandom() {
+  const games = getKnownGames();
+  let news = [];
+
+  try {
+    for (let i = 0; i < 5; i++) {
+      const randomGame = games[Math.floor(Math.random() * games.length)];
+
+      const { data } = await axios.get(
+        `${STEAM_API_URL}/ISteamNews/GetNewsForApp/v2/?appid=${randomGame.appid}`
+      );
+
+      news.push(data.appnews.newsitems[0]);
+    }
+
+    console.log(news);
+
+    return news;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getImageFromApp(appid) {
+  if (!appid) return;
+
+  try {
+    const { data } = await axios.get(
+      `${STEAM_STORE_API_URL}/appdetails?appids=${appid}`
+    );
+
+    console.log(data[appid].data.header_image);
+
+    return data[appid].data.header_image;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function getAppidFromName(name) {
+  const games = getKnownGames();
+
+  const game = games.find((game) => game.name === name);
+
+  if (!game) return;
+
+  return game.appid;
+}
+
 module.exports = {
   resolveVanityURL,
   getOwnedGames,
   getGameRoomPlayers,
   getKnownGames,
+  getMessageHistory,
+  getNewsForAppRandom,
+  getImageFromApp,
+  getAppidFromName,
 };

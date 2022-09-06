@@ -244,32 +244,4 @@ router.get("/:gameRoomId/destroy", (req, res) => {
   });
 });
 
-//Chat GET REQUEST
-router.get("/:gameRoomId/chat", (req, res) => {
-  const { gameRoomId } = req.params;
-  const { user } = req;
-  const isValidId = isValidObjectId(gameRoomId);
-
-  if (!isValidId) return res.status(400).redirect("/");
-
-  GameRoomModel.findById(gameRoomId)
-    .then((gameRoom) => {
-      getGameRoomPlayers(gameRoom).then((players) => {
-        return res.render("gameroom/chat", {
-          user,
-          gameRoomId,
-          players,
-        });
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.status(500).redirect("/");
-    });
-  // res.render("gameroom/chat", {
-  //   user,
-  //   gameRoomId,
-  // });
-});
-
 module.exports = router;

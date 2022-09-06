@@ -22,7 +22,7 @@ const inputGameRoomId = document.getElementById("chat-gameroom-id");
 let roomId = inputGameRoomId.value;
 let userId = inputUserId.value;
 
-socket.emit("join", roomId);
+socket.emit("join", roomId, userId);
 
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -58,8 +58,8 @@ socket.on(
   }
 );
 
-socket.on("previousMessages", (previousMessages) => {
-  if (previousMessages.length) {
+socket.on("previousMessages", (previousMessages, user) => {
+  if (previousMessages.length && user === userId) {
     previousMessages.forEach((message) => {
       let li = document.createElement("li");
       li.textContent = `${message.name}: ${message.content}`;

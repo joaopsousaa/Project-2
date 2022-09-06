@@ -5,13 +5,21 @@ const GameRoomModel = require("../models/GameRoom.model");
 
 // Utils
 const { ObjectId } = require("mongoose").Types;
-const { getKnownGames } = require("../utils");
+const {
+  getKnownGames,
+  getNewsForAppRandom,
+  getImageFromApp,
+} = require("../utils");
 
 // -------------------------- Routes ------------------------ //
 
 /* GET home page */
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const { userId } = req.session;
+  const news = await getNewsForAppRandom();
+  const image = await getImageFromApp(730);
+
+  console.log(image);
 
   GameRoomModel.find({ status: { $ne: "finished" } }).then(
     (allGameRoomsFromDB) => {
@@ -22,6 +30,7 @@ router.get("/", (req, res) => {
       res.render("index", {
         userId: userId,
         gameRooms: allGameRoomsFromDB,
+        news,
       });
     }
   );
