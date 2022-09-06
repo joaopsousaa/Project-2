@@ -15,12 +15,22 @@ const formatMessage = require("./utils/messages");
 // app.set("socketio", io);
 
 io.on("connection", (socket) => {
+  // socket.emit("id", socket.id); // send each client their socket id
   socket.on("join", (room) => {
     socket.join(room);
-    console.log(room);
+    ChatModel.find({ room: room }).then((result) => {
+      io.to(room).emit("previousMessages", result);
+      console.log(result);
+    });
+    // console.log(room);
   });
 
-  // socket.emit("id", socket.id); // send each client their socket id
+  // socket.on("kickedPlayer", (user) => {
+  //   console.log(user);
+  // });
+
+  // //Runs when player joins the game room
+  // socket.broadcast.emit("message", "A user has joined the room");
 
   // let currentGameRoomIdUrl = socket.handshake.headers.referer.split("/")[4];
   // if (!currentGameRoomIdUrl) {
@@ -45,7 +55,7 @@ io.on("connection", (socket) => {
       user: data.user,
       room: data.room,
     };
-    console.log(messageAttributes);
+    // console.log(messageAttributes);
     const message = new ChatModel(messageAttributes);
     message
       .save()
@@ -54,16 +64,9 @@ io.on("connection", (socket) => {
       })
       .catch((error) => console.log(`error: ${error.message}`));
   });
-  // console.log(gameRoom);
+  // console.log(room);
   // io.emit("message", formatMessage("username", msg));
   // console.log(gameRoom._id);
-
-  // ChatModel.find().then((result) => {
-  //   socket.emit("previousMessages", result);
-  // });
-
-  // //Runs when player joins the game room
-  // socket.broadcast.emit("message", "A user has joined the chat");
 
   // //Runs when player leaves the game room
   // socket.on("disconnect", () => {
