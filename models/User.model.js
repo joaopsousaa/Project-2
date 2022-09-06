@@ -17,6 +17,18 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    friends: [
+      {
+        type: Schema.ObjectId,
+        ref: "User",
+      },
+    ],
+    requests: [
+      {
+        type: Schema.ObjectId,
+        ref: "User",
+      },
+    ],
     steamVanityUrl: {
       type: String,
       default: null,

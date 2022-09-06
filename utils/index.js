@@ -1,8 +1,17 @@
+// Modules
 const axios = require("axios");
-const UserModel = require("../models/User.model");
+const fs = require("fs");
+
+// Variables
 const { STEAM_API_URL, STEAM_API_KEY, STEAM_ICON_URL } = require("./consts");
 
+// Models
+const UserModel = require("../models/User.model");
+
 async function resolveVanityURL(vanityUrl) {
+  // If the vanity url doesn't exist, return
+  if (!vanityUrl) return;
+
   try {
     // Get the steam id from the steam vanity url using the steam api
     const { data } = await axios.get(
@@ -16,7 +25,12 @@ async function resolveVanityURL(vanityUrl) {
 }
 
 async function getOwnedGames(steamId) {
+  // If the steam id doesn't exist, return
+  if (!steamId) return;
+
+  // Parameters to get all information about the games the user owns
   const parameters = "include_appinfo=true&include_played_free_games=true";
+
   try {
     // Get the owned games from the steam id using the steam api
     const { data } = await axios.get(
@@ -36,7 +50,9 @@ async function getOwnedGames(steamId) {
     // Return the owned games
     return games;
   } catch (error) {
+    // If there is an error, return nothing
     console.log(error);
+    return;
   }
 }
 
@@ -54,24 +70,27 @@ async function getGameRoomPlayers(gameRoom) {
   } catch (error) {
     console.log(error);
   }
+}
 
-  // console.log(gameRoomPlayers);
+function getKnownGames() {
+  const gamesList = fs.readFileSync("./games.json");
+  const games = JSON.parse(gamesList).games;
 
-  // gameRoomPlayers.forEach((player) => {
-  //   console.log(player);
-  //   UserModel.findById(player).then((user) => {
-  //     console.log("user", user);
-  //     players.push(user);
-  //   });
-  // });
+  games.sort(({ name: a }, { name: b }) => {
+    a = a.toLowerCase();
+    b = b.toLowerCase();
 
-  // console.log("PLAYERS: ", players);
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  });
 
-  // return players;
+  return games;
 }
 
 module.exports = {
   resolveVanityURL,
   getOwnedGames,
   getGameRoomPlayers,
+  getKnownGames,
 };

@@ -1,36 +1,44 @@
 <div class="container">
   <h1>{{gameRoom.name}}</h1>
   <div class="row">
-    <div class="col-8">
-      <h2>Players</h2>
+    <div class="col-7">
+      <h2>Players {{gameRoom.players.length}}/{{gameRoom.maxPlayers}}</h2>
       <div class="card">
         <ul class="list-group list-group-flush">
           <div class="row player-card">
             {{#each players}}
-              <div class="col-6 player-card">
+              <div class="col-12 col-md-6 player-card">
                 <li class="list-group-item">
                   <img
                     src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
                     alt=""
                     class="player-image"
                   />
-                  {{username}}</li>
+                  {{username}}
+                </li>
               </div>
             {{/each}}
           </div>
         </ul>
       </div>
     </div>
-    <div class="col-4">
-      GameRoom Info
+    <div class="col-5">
+      <h2>Game Room Info</h2>
+      <div>
+        {{gameRoom.name}}
+        <br />
+        {{gameRoom.game}}
+        <br />
+        {{gameRoom.players.length}}/{{gameRoom.maxPlayers}}
+      </div>
     </div>
   </div>
 
   {{#ifEquals gameRoom.status "waiting"}}
     {{#ifIdEquals userId gameRoom.owner}}
-      <a href="{{gameRoom._id}}/start">▶️ Start Game Room</a>
+      <a href="/gameroom/{{gameRoom._id}}/start">▶️ Start Game Room</a>
     {{/ifIdEquals}}
-    <a href="{{gameRoom._id}}/leave">🥾 Leave Game Room</a>
+    <a href="/gameroom/{{gameRoom._id}}/leave">🥾 Leave Game Room</a>
     {{#ifIdEquals userId gameRoom.owner}}
       <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
     {{/ifIdEquals}}
@@ -38,10 +46,10 @@
     {{#ifEquals gameRoom.status "finished"}}
       <p>Game is Finished</p>
       {{#ifIdEquals userId gameRoom.owner}}
-        <a href="{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
+        <a href="/gameroom/{{gameRoom._id}}/destroy">❌ Destroy Game Room</a>
       {{/ifIdEquals}}
     {{else}}
-      <a href="{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
+      <a href="/gameroom/{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
     {{/ifEquals}}
   {{/ifEquals}}
 
