@@ -3,6 +3,7 @@ const fs = require("fs");
 
 // Models
 const GameRoomModel = require("../models/GameRoom.model");
+const ChatModel = require("../models/Chat.model");
 
 // Middlewares
 const isLoggedIn = require("../middleware/isLoggedIn");
@@ -252,23 +253,54 @@ router.get("/:gameRoomId/chat", (req, res) => {
 });
 
 //Chat POST REQUEST
-router.post("/:gameRoomId/chat", (req, res) => {
-  const { gameRoomId } = req.params;
-  const msgInput = req.body;
+// router.post("/:gameRoomId/chat", (req, res) => {
+//   const { gameRoomId } = req.params;
+//   const { user } = req;
+//   const isValidId = isValidObjectId(gameRoomId);
+//   const { msgInput } = req.body;
+//   console.log("THIS IS MESSAGE:", msgInput);
 
-  console.log(msgInput);
-  console.log("gameRoomId:", gameRoomId);
+//   if (!isValidId) return res.status(400).redirect("/");
+//   // grab the id from the request
+//   // const socketId = req.body.message.socketId;
 
-  GameRoomModel.findByIdAndUpdate(
-    gameRoomId,
-    {
-      $push: { chatRoom: msgInput },
-    },
-    { new: true }
-  ).then((gameroom) => {
-    res.render("gameroom/chat", { gameRoomId });
-  });
-});
+//   // // get the io object ref
+//   // const io = req.app.get("socketio");
+
+//   // // create a ref to the client socket
+//   // const senderSocket = io.sockets.connected[socketId];
+
+//   // Message.create(req.body.message)
+//   //   .then((message) => {
+//   //     // in case the client was disconnected after the request was sent
+//   //     // and there's no longer a socket with that id
+//   //     if (senderSocket) {
+//   //       // use broadcast.emit to message everyone except the original
+//   //       // sender of the request !!!
+//   //       senderSocket.broadcast.emit("message broadcast", { message });
+//   //     }
+//   //     res.status(201).json({ message: message.toObject() });
+//   //   })
+//   //   .catch(next);
+//   // //   ChatModel.create({
+//   // //     gameRoomId: gameRoomId,
+//   // //     user: user._id,
+//   // //     message: msgInput,
+//   // //   }).then((gameRoom) => {
+//   // //     res.render("gameroom/chat", { gameRoomId });
+//   // //   });
+
+//   // // GameRoomModel.findByIdAndUpdate(
+//   // //   gameRoomId,
+//   // //   {
+//   // //     $push: { chatRoom: msgInput },
+//   // //   },
+//   // //   { new: true }
+//   // // ).then((gameroom) => {
+
+//   // // });
+//   res.render("gameroom/chat", { gameRoomId });
+// });
 
 // ----------------------------------------------------------- //
 

@@ -1,7 +1,7 @@
 <h3>Room Chat</h3>
 <div class="chat-msg-field">
-  <div class="chat-messages"></div></div>
-<form action="/gameroom/{{gameRoomId}}/chat" id="chat-form" method="post">
+  <ul id="messages"></ul></div>
+<form id="chat-form">
   <input
     id="msg"
     name="msgInput"
@@ -10,5 +10,8 @@
     required
     autocomplete="off"
   />
+  <input id="chat-user-name" type="hidden" value="{{user.username}}" />
+  <input id="chat-user-id" type="hidden" value="{{user._id}}" />
+  <input id="chat-gameroom-id" type="hidden" value="{{gameRoomId}}" />
   <button type="submit" class="btn btn-primary">Send</button>
 </form>
