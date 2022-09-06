@@ -9,8 +9,6 @@ const GameRoomModel = require("../models/GameRoom.model");
 router.post("/", (req, res) => {
   const { search } = req.body;
 
-  console.log(search);
-
   GameRoomModel.find({
     $or: [
       { name: { $regex: search, $options: "i" } },

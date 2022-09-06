@@ -1,11 +1,12 @@
+// Models
 const UserModel = require("../models/User.model");
 
+// ------------------- Middleware ------------------- //
 module.exports = async (req, res, next) => {
-  const user = await UserModel.findById(req.session.userId);
+  const { userId } = req.session;
+  const user = await UserModel.findById(userId);
 
-  if (!user) {
-    return res.redirect("/");
-  }
+  if (!user) return res.redirect("/");
 
   req.user = user;
   next();

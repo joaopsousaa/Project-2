@@ -1,23 +1,43 @@
-<form action="/gameroom/create" method="POST">
-    <label>
-        Name:
-        <input type="text" name="name" value="{{name}}" placeholder="Choose a name for your game room">
-    </label>
-    <label>
-        Game:
-        <select name="game" placeholder="Select a game">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-9 col-md-7 col-lg-5 mt-3">
+      <h3 class="mb-3">Create Game Room</h3>
+      <form action="/gameroom/create" method="post" class="create-gameroom-form">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" name="name" id="name" />
+          <label for="name">Game Room Name</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="text" list="gamesList" oninput="validateGame()" class="form-control" name="game" id="game" />
+          <datalist id="gamesList">
             {{#each games}}
-            <option value="{{this.name}}">{{this.name}}</option>
-            {{/each}}   
-        </select>
-    </label>
-    <label>
-        Min Players:
-        <input type="number" name="minPlayers" value="{{minPlayers}}" min="2" placeholder="Select a min number of players">
-    </label>
-    <label>
-        Max Players:
-        <input type="number" name="maxPlayers" value="{{maxPlayers}}" min="2" placeholder="Select a max number of players">
-    </label>
-    <button type="submit">Submit</button>
-</form>
+              <option value="{{name}}">
+            {{/each}}
+          </datalist>
+          <label for="game">Game</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="number"
+            min="2"
+            class="form-control"
+            name="minPlayers"
+            id="minPlayers"
+          />
+          <label for="minPlayers">Min Players</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="number"
+            min="2"
+            class="form-control"
+            name="maxPlayers"
+            id="maxPlayers"
+          />
+          <label for="maxPlayers">Max Players</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
