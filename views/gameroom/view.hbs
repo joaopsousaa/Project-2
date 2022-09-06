@@ -52,4 +52,22 @@
     {{/ifEquals}}
   {{/ifEquals}}
 
+  <h3>Room Chat</h3>
+  <div class="chat-msg-field">
+    <ul id="messages"></ul></div>
+  <form id="chat-form">
+    <input
+      id="msg"
+      name="msgInput"
+      type="text"
+      placeholder="Enter Message"
+      required
+      autocomplete="off"
+    />
+    <input id="chat-user-name" type="hidden" value="{{userId}}" />
+    <input id="chat-user-id" type="hidden" value="{{userId}}" />
+    <input id="chat-gameroom-id" type="hidden" value="{{gameRoom._id}}" />
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+
 </div>

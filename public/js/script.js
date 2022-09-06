@@ -2,6 +2,9 @@ document.addEventListener(
   "DOMContentLoaded",
   () => {
     console.log("Gamelandia JS imported successfully!");
+    const firstNew = document.getElementsByClassName("carousel-item")[0];
+
+    firstNew.classList.add("active");
   },
   false
 );
@@ -28,6 +31,7 @@ chatForm.addEventListener("submit", (e) => {
   userId = inputUserId.value;
   let userName = inputUserName.value;
   roomId = inputGameRoomId.value;
+
   //Get message text
   if (text) {
     //Emit message to server
@@ -42,19 +46,21 @@ chatForm.addEventListener("submit", (e) => {
   }
 });
 
-socket.on("message", (messageAttributes) => {
-  let li = document.createElement("li");
-  li.textContent = `${messageAttributes.name}: ${messageAttributes.content}`;
-  messages.appendChild(li);
-  window.scrollTo(0, document.body.scrollHeight);
-  // console.log(gameRoomId);
-});
+socket.on(
+  "message",
+  ({ content: text, name: userName, user: userId, room: roomId }) => {
+    let li = document.createElement("li");
+    let strong = document.createElement("strong");
+    strong.textContent = userName;
+    li.textContent = text;
+    messages.appendChild(li).appendChild(strong);
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+);
 
 socket.on("previousMessages", (previousMessages) => {
-  if (previousMessages) {
-    console.log("Aquiiiiii");
+  if (previousMessages.length) {
     previousMessages.forEach((message) => {
-      console.log(message);
       let li = document.createElement("li");
       li.textContent = `${message.name}: ${message.content}`;
       messages.appendChild(li);

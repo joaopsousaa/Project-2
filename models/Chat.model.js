@@ -2,18 +2,6 @@ const { Schema, model } = require("mongoose");
 
 const ChatSchema = new Schema(
   {
-    // gameRoomId: {
-    //   type: Schema.ObjectId,
-    //   //   required: true,
-    // },
-    // userId: {
-    //   type: Schema.ObjectId,
-    //   //   required: true,
-    // },
-    // message: {
-    //   type: String,
-    //   required: true,
-    // },
     content: {
       type: String,
       required: true,
@@ -37,6 +25,6 @@ const ChatSchema = new Schema(
   }
 );
 
-const Chat = model("ChatModel", ChatSchema);
+const Chat = model("Chat", ChatSchema);
 
 module.exports = Chat;
