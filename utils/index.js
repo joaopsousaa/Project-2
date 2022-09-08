@@ -8,11 +8,36 @@ const {
   STEAM_STORE_API_URL,
   STEAM_API_KEY,
   STEAM_ICON_URL,
+  STEAM_CLAN_IMG_URL,
 } = require("./consts");
 
 // Models
 const UserModel = require("../models/User.model");
+const GameRoomModel = require("../models/GameRoom.model");
 const ChatModel = require("../models/Chat.model");
+
+async function getUserFriendList(user) {
+  const { friends, requests } = user;
+
+  const friendsList = await Promise.all(
+    friends.map(async (friend) => {
+      const friendUser = await UserModel.findById(friend);
+      return friendUser;
+    })
+  );
+
+  const requestsList = await Promise.all(
+    requests.map(async (request) => {
+      const requestUser = await UserModel.findById(request);
+      return requestUser;
+    })
+  );
+
+  console.log("friendsList:", friendsList);
+  console.log("requestsList:", requestsList);
+
+  return { friendsList, requestsList };
+}
 
 async function resolveVanityURL(vanityUrl) {
   // If the vanity url doesn't exist, return
@@ -94,20 +119,43 @@ function getKnownGames() {
   return games;
 }
 
+async function getSuggestedGameRooms(userId) {
+  const user = await UserModel.findById(userId);
+  const games = getKnownGames();
+
+  if (!user.steamId) return;
+
+  const userOwnedGames = await getOwnedGames(user.steamId);
+
+  const userOwnedKnownGames = userOwnedGames.filter((game) => {
+    return games.find((knownGame) => knownGame.appid === game.appid);
+  });
+
+  let suggestedGameRooms = [];
+
+  for (const game of userOwnedKnownGames) {
+    const gameRoom = await GameRoomModel.findOne({
+      game: { $regex: game.name, $options: "i" },
+      status: "waiting",
+    });
+
+    if (gameRoom) suggestedGameRooms.push(gameRoom);
+  }
+
+  return suggestedGameRooms;
+}
+
 async function getMessageHistory(roomId) {
   const messages = await ChatModel.find({ room: roomId });
 
   try {
     messages.forEach(async (message) => {
       message.username = (await UserModel.findById(message.user)).username;
-      console.log(message.username);
     });
 
     messages.sort((a, b) => {
       return a.createdAt - b.createdAt;
     });
-
-    console.log(messages);
   } catch (error) {
     console.log(error);
   }
@@ -121,16 +169,33 @@ async function getNewsForAppRandom() {
 
   try {
     for (let i = 0; i < 5; i++) {
-      const randomGame = games[Math.floor(Math.random() * games.length)];
+      let randomGame = games[Math.floor(Math.random() * games.length)];
+
+      if (news.find((game) => game.appid === randomGame.appid))
+        while (news.find((game) => game.appid === randomGame.appid))
+          randomGame = games[Math.floor(Math.random() * games.length)];
 
       const { data } = await axios.get(
         `${STEAM_API_URL}/ISteamNews/GetNewsForApp/v2/?appid=${randomGame.appid}`
       );
 
-      news.push(data.appnews.newsitems[0]);
-    }
+      const newsData = data.appnews.newsitems[0];
+      newsData.game = randomGame.name;
 
-    console.log(news);
+      newsData.banner = newsData.contents.match(
+        /{STEAM_CLAN_IMAGE}\/[0-9]{0,}\/[a-zA-z0-9]{0,}.(png|jpg|jpeg)/gm
+      );
+
+      if (newsData.banner !== null) {
+        newsData.banner = newsData.banner.map((b) => {
+          return b.replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMG_URL);
+        });
+      } else {
+        newsData.banner = [await getImageFromApp(randomGame.appid)];
+      }
+
+      news.push(newsData);
+    }
 
     return news;
   } catch (error) {
@@ -145,8 +210,6 @@ async function getImageFromApp(appid) {
     const { data } = await axios.get(
       `${STEAM_STORE_API_URL}/appdetails?appids=${appid}`
     );
-
-    console.log(data[appid].data.header_image);
 
     return data[appid].data.header_image;
   } catch (error) {
@@ -165,6 +228,7 @@ function getAppidFromName(name) {
 }
 
 module.exports = {
+  getUserFriendList,
   resolveVanityURL,
   getOwnedGames,
   getGameRoomPlayers,
@@ -173,4 +237,5 @@ module.exports = {
   getNewsForAppRandom,
   getImageFromApp,
   getAppidFromName,
+  getSuggestedGameRooms,
 };

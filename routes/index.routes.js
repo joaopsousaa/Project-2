@@ -17,9 +17,6 @@ const {
 router.get("/", async (req, res) => {
   const { userId } = req.session;
   const news = await getNewsForAppRandom();
-  const image = await getImageFromApp(730);
-
-  console.log(image);
 
   GameRoomModel.find({ status: { $ne: "finished" } }).then(
     (allGameRoomsFromDB) => {

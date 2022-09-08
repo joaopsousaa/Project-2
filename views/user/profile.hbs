@@ -1,67 +1,175 @@
-<h1>Hello {{user.username}}</h1>
-
-<div>
-  Your email is
-  {{user.email}}. Nice to see you today
-</div>
-
-<div>
-  In case you do not know, your id is
-  {{user._id}}
-</div>
-
-<div>
-  <h2>
-    <a href="/settings">
-      Settings
-    </a>
-  </h2>
-</div>
-
-{{#if gameRoomsPlaying}}
-  <h3>Current Game Room</h3>
-  <div
-    style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
-  >
-    <div style="width: 30%; padding: 1%;">
-      <div>
-        <h3>{{gameRoomsPlaying.0.name}}</h3>
-        <a href="/gameroom/{{gameRoomsPlaying.0._id}}">Open</a>
+<div class="container mt-4 mb-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex align-items-center">
+        <h1>{{user.username}}</h1>
+        {{#ifIdEquals userId user._id}}
+          <a
+            href="/settings"
+            class="btn btn-primary ms-auto my-auto"
+          >Settings</a>
+        {{else}} 
+          {{#ifIn userId requestsList}}
+          <a href="/friend/{{user._id}}/cancel" class="btn btn-danger ms-auto my-auto">
+            Cancel Request
+          </a>
+          {{else}} 
+            {{#ifIn userId friendsList}}
+          <p class="btn btn-success ms-auto my-auto">
+            Friends
+          </p>
+            {{else}}
+            <a
+              href="/friend/{{user._id}}/add"
+              class="btn btn-primary ms-auto my-auto"
+            >Add Friend</a>
+            {{/ifIn}}
+          {{/ifIn}}
+        {{/ifIdEquals}}
       </div>
     </div>
   </div>
-{{/if}}
-
-{{#if gameRoomsFinished}}
-  <h3>Previous Game Rooms</h3>
-  <div
-    style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
-  >
-
-    {{#each gameRoomsFinished}}
-      <div style="width: 30%; padding: 1%;">
-        <div>
-          <h3>{{name}}</h3>
+  <ul class="nav nav-tabs mt-2" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="gameRooms-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#gameRooms-tab-pane"
+        type="button"
+        role="tab"
+        aria-controls="gameRooms-tab-pane"
+        aria-selected="true"
+      >Game Rooms</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="friends-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#friends-tab-pane"
+        type="button"
+        role="tab"
+        aria-controls="friends-tab-pane"
+        aria-selected="false"
+      >
+      Friends
+      {{#ifIdEquals userId user._id}}
+        {{#if requestsList.length}}
+         <span class="badge bg-danger">{{requestsList.length}}</span></button>
+        {{/if}}
+      {{/ifIdEquals}}
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div
+      class="tab-pane fade show active"
+      id="gameRooms-tab-pane"
+      role="tabpanel"
+      aria-labelledby="gameRooms-tab"
+      tabindex="0"
+    >
+      {{#if gameRoomsPlaying}}
+        {{!-- prettier-ignore --}}
+        {{#with gameRoomsPlaying.[0]}}
+          <h3 class="mt-3">Current Game Room</h3>
+          <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{name}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{game}}</h6>
+                  <p>{{status}}<br />{{players.length}}/{{maxPlayers}}</p>
+                  <a href="/gameroom/{{_id}}" class="card-link">Open</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {{/with}}
+      {{else}}
+        {{#ifIdEquals userId user._id}}
+          {{#if suggestedGameRooms}}
+        <h3 class="mt-3">Suggested Game Rooms</h3>
+        <div class="row">
+          {{#each suggestedGameRooms}}
+            <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{name}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{game}}</h6>
+                  <p>{{status}}<br />{{players.length}}/{{maxPlayers}}</p>
+                  <a href="/gameroom/{{_id}}" class="card-link">Open</a>
+                </div>
+              </div>
+            </div>
+          {{/each}}
         </div>
-      </div>
-    {{/each}}
+          {{/if}}
+        {{/ifIdEquals}}
+      {{/if}}
+      {{#if gameRoomsFinished}}
+        <h3 class="mt-3">Previous Game Rooms</h3>
+        <div class="row">
+          {{#each gameRoomsFinished}}
+            <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{name}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{game}}</h6>
+                  <p>{{status}}<br />{{players.length}}/{{maxPlayers}}</p>
+                  <a href="/gameroom/{{_id}}" class="card-link">See</a>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+    <div
+      class="tab-pane fade"
+      id="friends-tab-pane"
+      role="tabpanel"
+      aria-labelledby="friends-tab"
+      tabindex="0"
+    >
+      {{#ifIdEquals userId user._id}}
+        {{#if requestsList.length}}
+          <h3 class="mt-3">Friend Requests</h3>
+          <div class="row">
+            {{#each requestsList}}
+              <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">{{username}}</h5>
+                    
+                    <a href="/friend/{{_id}}/accept" class="card-link">Accept</a>
+                    <a href="/friend/{{_id}}/decline" class="card-link">Decline</a>
+                  
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}
+      {{/ifIdEquals}}
+      {{#if friendsList.length}}
+        <h3 class="mt-3">Friends</h3>
+        <div class="row">
+          {{#each friendsList}}
+            <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{username}}</h5>
+                  <a href="/user/{{_id}}" class="card-link">Profile</a>
+                  {{#ifIdEquals ../userId ../user._id}}
+                  <a href="/friend/{{_id}}/remove" class="card-link">Remove</a>
+                  {{/ifIdEquals}}
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
   </div>
-{{/if}}
-
-{{#if games}}
-  <h3>Owned Games</h3>
-  <div
-    style="display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;"
-  >
-    {{#each games}}
-      <div style="width: 30%; padding: 1%;">
-        <div>
-          <img src="{{img_logo_url}}" alt={{name}} />
-        </div>
-        <div>
-          <h3>{{name}}</h3>
-        </div>
-      </div>
-    {{/each}}
-  </div>
-{{/if}}
+</div>

@@ -25,7 +25,6 @@ io.on("connection", (socket) => {
       user: data.user,
       room: data.room,
     };
-    // console.log(messageAttributes);
     const message = new ChatModel(messageAttributes);
     message
       .save()

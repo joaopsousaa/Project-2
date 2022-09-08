@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mt-4">
   <h1>{{gameRoom.name}}</h1>
   <div class="row">
     <div class="col-7">
@@ -17,11 +17,110 @@
                   {{username}}</li>
               </div>
             {{/each}}
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
+            <div class="col-12 col-md-6 player-card">
+              <li class="list-group-item">
+                <img
+                  src="https://cdn.akamai.steamstatic.com//steam//apps//12200//0000006051.1920x1080.jpg?t=1618853378"
+                  alt=""
+                  class="player-image"
+                />
+                cenas</li>
+            </div>
           </div>
         </ul>
       </div>
     </div>
-    <div class="col-5">
+    <div class="col-12 col-md-5">
       <h2>Game Room Info</h2>
       <div>
         {{gameRoom.name}}
@@ -51,23 +150,32 @@
       <a href="/gameroom/{{gameRoom._id}}/finish">🏁 Finish Game Room</a>
     {{/ifEquals}}
   {{/ifEquals}}
-
-  <h3>Room Chat</h3>
-  <div class="chat-msg-field">
-    <ul id="messages"></ul></div>
-  <form id="chat-form">
-    <input
-      id="msg"
-      name="msgInput"
-      type="text"
-      placeholder="Enter Message"
-      required
-      autocomplete="off"
-    />
-    <input id="chat-user-name" type="hidden" value="{{user.username}}" />
-    <input id="chat-user-id" type="hidden" value="{{userId}}" />
-    <input id="chat-gameroom-id" type="hidden" value="{{gameRoom._id}}" />
-    <button type="submit" class="btn btn-primary">Send</button>
-  </form>
-
+  <h3 class="mt-4">Room Chat</h3>
+  <div class="row">
+    <div class="col-12">
+      <div class="fs-sm-6 fs-5" id="chat-div">
+        <ul
+          class="d-flex flex-column px-sm-2 px-4"
+          id="messages"
+          style="list-style-type: none;"
+        >
+        </ul>
+      </div>
+      <form class="d-flex mt-2" id="chat-form">
+        <input
+          class="form-control me-4"
+          id="msg"
+          name="msgInput"
+          type="text"
+          placeholder="Enter Message"
+          required
+          autocomplete="off"
+        />
+        <input id="chat-user-name" type="hidden" value="{{user.username}}" />
+        <input id="chat-user-id" type="hidden" value="{{userId}}" />
+        <input id="chat-gameroom-id" type="hidden" value="{{gameRoom._id}}" />
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+    </div>
+  </div>
 </div>

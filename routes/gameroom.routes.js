@@ -38,14 +38,10 @@ router.get("/create", (req, res) => {
 // POST /create --> Create a new game room
 router.post("/create", (req, res) => {
   const { user } = req;
-  const { game } = req.body;
-  let {
-    name = `${user.username}'s Game Room`,
-    minPlayers = 2,
-    maxPlayers = 2,
-  } = req.body;
-
   const games = getKnownGames();
+  let { name, game, minPlayers = 2, maxPlayers = 2 } = req.body;
+
+  if (!name) name = `${user.username}'s Game Room`;
 
   if (!game) {
     return res.status(400).render("gameroom/create", {
@@ -70,6 +66,10 @@ router.post("/create", (req, res) => {
     });
   }
 
+  isGameKnown = games.find((g) => g.name.match(new RegExp(game, "i")));
+
+  if (isGameKnown) game = isGameKnown.name;
+
   GameRoomModel.create({
     name,
     game,
@@ -82,7 +82,7 @@ router.post("/create", (req, res) => {
   });
 });
 
-// GET /:gameRoomId --> Render the game room page AND join the game room
+// GET /:gameRoomId --> Render the game room page AND/OR join the game room
 router.get("/:gameRoomId", (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
@@ -93,8 +93,21 @@ router.get("/:gameRoomId", (req, res) => {
   GameRoomModel.findById(gameRoomId)
     .then((gameRoom) => {
       if (!gameRoom) return res.status(400).redirect("/");
+      if (gameRoom.status === "finished") {
+        getGameRoomPlayers(gameRoom).then((players) => {
+          return res.render("gameroom/view", {
+            userId: user._id,
+            user,
+            gameRoom,
+            players,
+          });
+        });
+        return;
+      }
+
       if (gameRoom.status === "playing" && !gameRoom.players.includes(user._id))
         return res.status(400).redirect("/");
+
       if (gameRoom.players.includes(user._id)) {
         getGameRoomPlayers(gameRoom).then((players) => {
           return res.render("gameroom/view", {

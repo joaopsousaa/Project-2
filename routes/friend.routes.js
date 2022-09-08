@@ -39,7 +39,7 @@ router.get("/:friendId/add", (req, res) => {
         },
         { new: true }
       ).then((request) => {
-        return res.status(200).redirect("/");
+        return res.status(200).redirect(`/user/${friendId}`);
       });
     })
     .catch((err) => {
@@ -53,13 +53,13 @@ router.get("/:friendId/cancel", (req, res) => {
   const { friendId } = req.params;
   const { userId } = req.session;
 
-  if (friendId === userId) return res.status(400).redirect("/");
+  if (friendId === userId) return res.status(400).redirect(`/user/${friendId}`);
 
   UserModel.findById(friendId)
     .then((friend) => {
       if (!friend) return res.status(400).redirect("/");
       if (!friend.requests.includes(userId))
-        return res.status(400).redirect("/");
+        return res.status(400).redirect(`/user/${friendId}`);
 
       UserModel.findByIdAndUpdate(
         {
@@ -72,7 +72,7 @@ router.get("/:friendId/cancel", (req, res) => {
         },
         { new: true }
       ).then((request) => {
-        return res.status(200).redirect("/");
+        return res.status(200).redirect(`/user/${friendId}`);
       });
     })
     .catch((err) => {
@@ -88,9 +88,11 @@ router.get("/:friendId/accept", (req, res) => {
   const { friendId } = req.params;
   const { user } = req;
 
-  if (friendId === user._id) return res.status(400).redirect("/");
+  if (friendId === user._id)
+    return res.status(400).redirect(`/user/${user._id}`);
 
-  if (!user.requests.includes(friendId)) return res.status(400).redirect("/");
+  if (!user.requests.includes(friendId))
+    return res.status(400).redirect(`/user/${user._id}`);
 
   UserModel.findByIdAndUpdate(
     {
@@ -107,7 +109,6 @@ router.get("/:friendId/accept", (req, res) => {
     { new: true }
   )
     .then((user) => {
-      console.log("user:", user);
       UserModel.findByIdAndUpdate(
         {
           _id: friendId,
@@ -119,8 +120,7 @@ router.get("/:friendId/accept", (req, res) => {
         },
         { new: true }
       ).then((friend) => {
-        console.log("friend:", friend);
-        return res.status(200).redirect("/");
+        return res.status(200).redirect(`/user/${user._id}`);
       });
     })
     .catch((err) => {
@@ -135,9 +135,11 @@ router.get("/:friendId/decline", (req, res) => {
   const { friendId } = req.params;
   const { user } = req;
 
-  if (friendId === user._id) return res.status(400).redirect("/");
+  if (friendId === user._id)
+    return res.status(400).redirect(`/user/${user._id}`);
 
-  if (!user.requests.includes(friendId)) return res.status(400).redirect("/");
+  if (!user.requests.includes(friendId))
+    return res.status(400).redirect(`/user/${user._id}`);
 
   UserModel.findByIdAndUpdate(
     {
@@ -151,7 +153,7 @@ router.get("/:friendId/decline", (req, res) => {
     { new: true }
   )
     .then((user) => {
-      return res.status(200).redirect("/");
+      return res.status(200).redirect(`/user/${user._id}`);
     })
     .catch((err) => {
       console.log("err:", err);
@@ -166,9 +168,11 @@ router.get("/:friendId/remove", (req, res) => {
   const { friendId } = req.params;
   const { user } = req;
 
-  if (friendId === user._id) return res.status(400).redirect("/");
+  if (friendId === user._id)
+    return res.status(400).redirect(`/user/${user._id}`);
 
-  if (!user.friends.includes(friendId)) return res.status(400).redirect("/");
+  if (!user.friends.includes(friendId))
+    return res.status(400).redirect(`/user/${user._id}`);
 
   UserModel.findByIdAndUpdate(
     {
@@ -193,7 +197,7 @@ router.get("/:friendId/remove", (req, res) => {
         },
         { new: true }
       ).then((friend) => {
-        return res.status(200).redirect("/");
+        return res.status(200).redirect(`/user/${user._id}`);
       });
     })
     .catch((err) => {

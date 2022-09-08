@@ -84,6 +84,15 @@
           </div>
         </div>
       {{/if}}
+
+      {{#if successMessage}}
+        <div class="d-flex justify-content-center">
+          <div class="alert alert-success" role="alert">
+            {{successMessage}}
+          </div>
+        </div>
+      {{/if}}
+
       {{{body}}}
     </main>
 
