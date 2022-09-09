@@ -7,22 +7,22 @@
           <a
             href="/settings"
             class="btn btn-primary ms-auto my-auto"
-          >Settings</a>
+          ><i class="bi bi-gear-fill"></i></a>
         {{else}} 
           {{#ifIn userId requestsList}}
           <a href="/friend/{{user._id}}/cancel" class="btn btn-danger ms-auto my-auto">
-            Cancel Request
+            <i class="bi bi-person-x-fill"></i> Cancel Request
           </a>
           {{else}} 
             {{#ifIn userId friendsList}}
           <p class="btn btn-success ms-auto my-auto">
-            Friends
+            <i class="bi bi-people-fill"></i> Friends
           </p>
             {{else}}
             <a
               href="/friend/{{user._id}}/add"
               class="btn btn-primary ms-auto my-auto"
-            >Add Friend</a>
+            ><i class="bi bi-person-plus-fill"></i> Add Friend</a>
             {{/ifIn}}
           {{/ifIn}}
         {{/ifIdEquals}}
@@ -40,7 +40,7 @@
         role="tab"
         aria-controls="gameRooms-tab-pane"
         aria-selected="true"
-      >Game Rooms</button>
+      ><i class="bi bi-joystick"></i> Game Rooms</button>
     </li>
     <li class="nav-item" role="presentation">
       <button
@@ -53,7 +53,7 @@
         aria-controls="friends-tab-pane"
         aria-selected="false"
       >
-      Friends
+      <i class="bi bi-people-fill"></i> Friends
       {{#ifIdEquals userId user._id}}
         {{#if requestsList.length}}
          <span class="badge bg-danger">{{requestsList.length}}</span></button>

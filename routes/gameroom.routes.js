@@ -10,7 +10,11 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const ifUserExists = require("../middleware/ifUserExists");
 
 //Utils
-const { getGameRoomPlayers, getKnownGames } = require("../utils");
+const {
+  getGameRoomPlayers,
+  getKnownGames,
+  getUserFriendList,
+} = require("../utils");
 const { isValidObjectId } = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
 
@@ -83,10 +87,11 @@ router.post("/create", (req, res) => {
 });
 
 // GET /:gameRoomId --> Render the game room page AND/OR join the game room
-router.get("/:gameRoomId", (req, res) => {
+router.get("/:gameRoomId", async (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
   const isValidId = isValidObjectId(gameRoomId);
+  const { friendsList } = await getUserFriendList(user);
 
   if (!isValidId) return res.status(400).redirect("/");
 
@@ -100,6 +105,7 @@ router.get("/:gameRoomId", (req, res) => {
             user,
             gameRoom,
             players,
+            friendsList,
           });
         });
         return;
@@ -115,6 +121,7 @@ router.get("/:gameRoomId", (req, res) => {
             user,
             gameRoom,
             players,
+            friendsList,
           });
         });
         return;
@@ -144,6 +151,7 @@ router.get("/:gameRoomId", (req, res) => {
               user,
               gameRoom,
               players,
+              friendsList,
             });
           });
         });
@@ -188,10 +196,11 @@ router.get("/:gameRoomId/leave", (req, res) => {
 });
 
 // GET /:gameRoomId/start --> Change the game room status to "playing"
-router.get("/:gameRoomId/start", (req, res) => {
+router.get("/:gameRoomId/start", async (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
   const isValidId = isValidObjectId(gameRoomId);
+  const { friendsList } = await getUserFriendList(user);
 
   if (!isValidId) return res.status(400).redirect("/");
 
@@ -205,6 +214,7 @@ router.get("/:gameRoomId/start", (req, res) => {
           gameRoom,
           players,
           errorMessage: "Not enough players to start the game.",
+          friendsList,
         });
       });
       return;
