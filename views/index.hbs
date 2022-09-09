@@ -1,8 +1,66 @@
+{{#if news}}
+  <div class="container-fluid p-0">
+    <div
+      id="carouselExampleIndicators"
+      class="carousel slide mh-80"
+      data-bs-ride="true"
+    >
+      <div class="carousel-indicators">
+        {{#times news.length}}
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="{{this}}"
+            {{#ifEquals 0 this}}
+              class="active"
+              aria-current="true"
+            {{/ifEquals}}
+            aria-label="Slide {{this}}"
+          ></button>
+        {{/times}}
+      </div>
+      <div class="carousel-inner">
+        {{#each news}}
+          <div
+            class="carousel-item"
+            style="background-image: url({{banner.[0]}});"
+          >
+            <div class="carousel-caption bg-caption">
+              <h4>{{game}}</h4>
+              <h5>{{title}}</h5>
+              <p><a href="{{url}}" target="_blank">View Article</a></p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+{{/if}}
+
 {{#if gameRooms}}
-  <div class="container">
+  <div class="container mt-4">
+    <h3>Available Game Rooms to Join</h3>
     <div class="row">
       {{#each gameRooms}}
-        <div class="col-sm-12 col-md-4 col-lg-3 m-2">
+        <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">{{name}}</h5>

@@ -32,12 +32,6 @@ const GameRoomSchema = new Schema(
       enum: ["waiting", "playing", "finished"],
       default: "waiting",
     },
-    chatRoom: [
-      {
-        type: Object,
-        default: [],
-      },
-    ],
   },
   {
     timestamps: true,

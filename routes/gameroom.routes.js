@@ -3,13 +3,18 @@ const fs = require("fs");
 
 // Models
 const GameRoomModel = require("../models/GameRoom.model");
+const ChatModel = require("../models/Chat.model");
 
 // Middlewares
 const isLoggedIn = require("../middleware/isLoggedIn");
 const ifUserExists = require("../middleware/ifUserExists");
 
 //Utils
-const { getGameRoomPlayers, getKnownGames } = require("../utils");
+const {
+  getGameRoomPlayers,
+  getKnownGames,
+  getUserFriendList,
+} = require("../utils");
 const { isValidObjectId } = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
 
@@ -37,14 +42,10 @@ router.get("/create", (req, res) => {
 // POST /create --> Create a new game room
 router.post("/create", (req, res) => {
   const { user } = req;
-  const { game } = req.body;
-  let {
-    name = `${user.username}'s Game Room`,
-    minPlayers = 2,
-    maxPlayers = 2,
-  } = req.body;
-
   const games = getKnownGames();
+  let { name, game, minPlayers = 2, maxPlayers = 2 } = req.body;
+
+  if (!name) name = `${user.username}'s Game Room`;
 
   if (!game) {
     return res.status(400).render("gameroom/create", {
@@ -69,6 +70,10 @@ router.post("/create", (req, res) => {
     });
   }
 
+  isGameKnown = games.find((g) => g.name.match(new RegExp(game, "i")));
+
+  if (isGameKnown) game = isGameKnown.name;
+
   GameRoomModel.create({
     name,
     game,
@@ -81,25 +86,42 @@ router.post("/create", (req, res) => {
   });
 });
 
-// GET /:gameRoomId --> Render the game room page AND join the game room
-router.get("/:gameRoomId", (req, res) => {
+// GET /:gameRoomId --> Render the game room page AND/OR join the game room
+router.get("/:gameRoomId", async (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
   const isValidId = isValidObjectId(gameRoomId);
+  const { friendsList } = await getUserFriendList(user);
 
   if (!isValidId) return res.status(400).redirect("/");
 
   GameRoomModel.findById(gameRoomId)
     .then((gameRoom) => {
       if (!gameRoom) return res.status(400).redirect("/");
+      if (gameRoom.status === "finished") {
+        getGameRoomPlayers(gameRoom).then((players) => {
+          return res.render("gameroom/view", {
+            userId: user._id,
+            user,
+            gameRoom,
+            players,
+            friendsList,
+          });
+        });
+        return;
+      }
+
       if (gameRoom.status === "playing" && !gameRoom.players.includes(user._id))
         return res.status(400).redirect("/");
+
       if (gameRoom.players.includes(user._id)) {
         getGameRoomPlayers(gameRoom).then((players) => {
           return res.render("gameroom/view", {
             userId: user._id,
+            user,
             gameRoom,
             players,
+            friendsList,
           });
         });
         return;
@@ -126,8 +148,10 @@ router.get("/:gameRoomId", (req, res) => {
           getGameRoomPlayers(gameRoom).then((players) => {
             return res.render("gameroom/view", {
               userId: user._id,
+              user,
               gameRoom,
               players,
+              friendsList,
             });
           });
         });
@@ -172,10 +196,11 @@ router.get("/:gameRoomId/leave", (req, res) => {
 });
 
 // GET /:gameRoomId/start --> Change the game room status to "playing"
-router.get("/:gameRoomId/start", (req, res) => {
+router.get("/:gameRoomId/start", async (req, res) => {
   const { gameRoomId } = req.params;
   const { user } = req;
   const isValidId = isValidObjectId(gameRoomId);
+  const { friendsList } = await getUserFriendList(user);
 
   if (!isValidId) return res.status(400).redirect("/");
 
@@ -185,9 +210,11 @@ router.get("/:gameRoomId/start", (req, res) => {
       getGameRoomPlayers(gameRoom).then((players) => {
         return res.render("gameroom/view", {
           userId: user._id,
+          user,
           gameRoom,
           players,
           errorMessage: "Not enough players to start the game.",
+          friendsList,
         });
       });
       return;
@@ -239,37 +266,5 @@ router.get("/:gameRoomId/destroy", (req, res) => {
     });
   });
 });
-
-//Chat GET REQUEST
-router.get("/:gameRoomId/chat", (req, res) => {
-  const { gameRoomId } = req.params;
-  const { user } = req;
-  const isValidId = isValidObjectId(gameRoomId);
-
-  if (!isValidId) return res.status(400).redirect("/");
-
-  res.render("gameroom/chat", { user, gameRoomId });
-});
-
-//Chat POST REQUEST
-router.post("/:gameRoomId/chat", (req, res) => {
-  const { gameRoomId } = req.params;
-  const msgInput = req.body;
-
-  console.log(msgInput);
-  console.log("gameRoomId:", gameRoomId);
-
-  GameRoomModel.findByIdAndUpdate(
-    gameRoomId,
-    {
-      $push: { chatRoom: msgInput },
-    },
-    { new: true }
-  ).then((gameroom) => {
-    res.render("gameroom/chat", { gameRoomId });
-  });
-});
-
-// ----------------------------------------------------------- //
 
 module.exports = router;

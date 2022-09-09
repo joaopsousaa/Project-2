@@ -29,6 +29,7 @@ const MongoStore = require("connect-mongo");
 const { MONGO_URI } = require("../utils/consts");
 
 const hbs = require("hbs");
+const { ObjectId } = require("mongoose").Types;
 
 // Middleware configuration
 module.exports = (app) => {
@@ -55,8 +56,27 @@ module.exports = (app) => {
   });
 
   hbs.registerHelper("ifIdEquals", function (arg1, arg2, options) {
+    if (typeof arg1 !== ObjectId) arg1 = ObjectId(arg1);
+
+    if (typeof arg2 !== ObjectId) arg2 = ObjectId(arg2);
+
     return arg1.equals(arg2) ? options.fn(this) : options.inverse(this);
   });
+
+  hbs.registerHelper("times", function (n, block) {
+    let acc = "";
+
+    for (let i = 0; i < n; i++) acc += block.fn(i);
+
+    return acc;
+  });
+
+  hbs.registerHelper("ifIn", function (value, array, options) {
+    return array.find((i) => i._id.equals(ObjectId(value)))
+      ? options.fn(this)
+      : options.inverse(this);
+  });
+
   // AHandles access to the public folder
   app.use(express.static(path.join(__dirname, "..", "public")));
 
